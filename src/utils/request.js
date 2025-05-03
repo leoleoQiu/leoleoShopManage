@@ -1,16 +1,20 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/index.js'
 const instance = axios.create({
   baseURL: '/api',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 })
-
 // 添加请求拦截器
 instance.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
+    const userStore = useUserStore()
+    if (userStore.token) {
+      config.headers['token'] = userStore.token
+    }
     return config
   },
   function (error) {

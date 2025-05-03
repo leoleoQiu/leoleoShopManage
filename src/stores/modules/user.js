@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginAPI } from '@/api/login'
+import { loginAPI, getAdminMenuAPI } from '@/api/login'
 export const useUserStore = defineStore(
-  'user',
+  'user-leoleo',
   () => {
     const token = ref('')
     const getToken = async ({ username, password }) => {
@@ -12,10 +12,17 @@ export const useUserStore = defineStore(
     const removeToken = () => {
       token.value = ''
     }
+    const userMenu = ref([])
+    const getUserMenu = async () => {
+      const res = await getAdminMenuAPI(token.value)
+      userMenu.value = res.data
+    }
     return {
       token,
       getToken,
-      removeToken
+      removeToken,
+      userMenu,
+      getUserMenu
     }
   },
   {

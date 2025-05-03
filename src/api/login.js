@@ -9,3 +9,9 @@ export const loginAPI = ({ username, password }) => {
     }
   })
 }
+export const getAdminMenuAPI = () => {
+  return request({
+    url: '/admin/getinfo',
+    method: 'post'
+  })
+}

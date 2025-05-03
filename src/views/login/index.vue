@@ -1,6 +1,6 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import { useUserStore } from '@/stores/index.js'
 import { useRouter } from 'vue-router'
 const ruleForm = ref({
@@ -29,6 +29,22 @@ const loginHandle = async () => {
   })
   router.replace('/')
 }
+
+const handleKeyUp = (e) => {
+  if (e.key === 'Enter') {
+    forms.value.validate()
+    loginHandle()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keyup', handleKeyUp)
+})
+
+onBeforeMount(() => {
+  // 正确移除事件监听器
+  document.removeEventListener('keyup', handleKeyUp)
+})
 </script>
 <template>
   <el-row style="height: 100vh">
