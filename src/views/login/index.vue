@@ -1,7 +1,8 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-import { loginAPI } from '@/api/login'
+import { useUserStore } from '@/stores/index.js'
+import { useRouter } from 'vue-router'
 const ruleForm = ref({
   username: '',
   password: ''
@@ -17,10 +18,16 @@ const rules = ref({
     { min: 4, max: 20, message: '长度在 4 到 20 个字符', trigger: 'blur' }
   ]
 })
+const userStore = useUserStore()
+const router = useRouter()
 const loginHandle = async () => {
   await forms.value.validate()
-  const res = await loginAPI(ruleForm.value)
-  console.log(res)
+  await userStore.getToken(ruleForm.value)
+  ElMessage({
+    message: '登录成功',
+    type: 'success'
+  })
+  router.replace('/')
 }
 </script>
 <template>
