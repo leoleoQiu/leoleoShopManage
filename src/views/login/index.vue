@@ -1,9 +1,12 @@
 <script setup>
+import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import { loginAPI } from '@/api/login'
 const ruleForm = ref({
   username: '',
   password: ''
 })
+const forms = ref()
 const rules = ref({
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -11,19 +14,24 @@ const rules = ref({
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+    { min: 4, max: 20, message: '长度在 4 到 20 个字符', trigger: 'blur' }
   ]
 })
+const loginHandle = async () => {
+  await forms.value.validate()
+  const res = await loginAPI(ruleForm.value)
+  console.log(res)
+}
 </script>
 <template>
-  <el-row>
-    <el-col :span="16" class="left">
+  <el-row style="height: 100vh">
+    <el-col :md="24" :lg="16" class="left">
       <div>
         <div class="title">LEOLEO后台</div>
         <div class="content">leoleoQiu的小demo 学学学学</div>
       </div>
     </el-col>
-    <el-col :span="8" class="right">
+    <el-col :md="24" :lg="8" class="right">
       <div>
         <div class="top">
           <div
@@ -42,15 +50,25 @@ const rules = ref({
             <span></span>
           </div>
         </div>
-        <el-form :model="ruleForm" :rules="rules">
+        <el-form :model="ruleForm" :rules="rules" ref="forms">
           <el-form-item label="用户" prop="username">
-            <el-input v-model="ruleForm.username"></el-input>
+            <el-input v-model="ruleForm.username">
+              <template #prefix>
+                <el-icon><User /></el-icon>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="ruleForm.password"></el-input>
+            <el-input type="password" v-model="ruleForm.password">
+              <template #prefix>
+                <el-icon><Lock /></el-icon>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button color="#6272f6" class="button">登录</el-button>
+            <el-button color="#6272f6" class="button" @click="loginHandle"
+              >登录</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -64,9 +82,9 @@ const rules = ref({
   justify-content: center;
   align-items: center;
 }
+
 .left {
   @include center;
-  height: 100vh;
   background-image: conic-gradient(
     #fff1f2 0 25%,
     #c4b5fd 25% 50%,
@@ -91,7 +109,6 @@ const rules = ref({
 }
 .right {
   @include center;
-  height: 100vh;
   .top {
     margin-bottom: 60px;
     .login {
