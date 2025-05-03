@@ -11,6 +11,7 @@ export const useUserStore = defineStore(
     }
     const removeToken = () => {
       token.value = ''
+      userMenu.value = []
     }
     const userMenu = ref([])
     const getUserMenu = async () => {

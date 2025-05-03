@@ -15,3 +15,9 @@ export const getAdminMenuAPI = () => {
     method: 'post'
   })
 }
+export const layoutAPI = () => {
+  return request({
+    url: '/admin/logout',
+    method: 'post'
+  })
+}
