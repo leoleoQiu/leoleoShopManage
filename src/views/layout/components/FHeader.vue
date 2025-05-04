@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue'
 import {
   Operation,
   Pointer,
@@ -31,50 +30,9 @@ const handleExit = () => {
 }
 //修改密码
 import { User, Lock } from '@element-plus/icons-vue'
-import { repasswordAPI } from '@/api/login'
-const ruleForm = ref({
-  username: '',
-  password: '',
-  repassword: ''
-})
-const forms = ref()
-const rules = ref({
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 4, max: 20, message: '长度在 4 到 20 个字符', trigger: 'blur' }
-  ],
-  repassword: [
-    { required: true, message: '请再次输入密码', trigger: 'blur' },
-    {
-      validator: (rule, value, callback) => {
-        if (value !== ruleForm.value.password) {
-          callback(new Error('两次输入密码不一致'))
-        } else {
-          callback()
-        }
-      },
-      trigger: 'blur'
-    }
-  ]
-})
-const repasswordHandle = async () => {
-  try {
-    await forms.value.validate()
-    FormDrawer.value.handleLoading()
-    await repasswordAPI(ruleForm.value)
-    ElMessage({
-      message: '修改成功',
-      type: 'success'
-    })
-  } finally {
-    FormDrawer.value.handleLoadingClose()
-  }
-}
-const FormDrawer = ref()
+import { repasswordFun } from '@/composables/UserMange'
+
+const { ruleForm, forms, rules, repasswordHandle, FormDrawer } = repasswordFun()
 const handleCommand = (command) => {
   switch (command) {
     case 'password':
@@ -92,10 +50,17 @@ const handleCommand = (command) => {
     <div class="left">
       <div class="title">
         <el-icon><Flag /></el-icon>
-        <span>后台管理</span>
+        <span ref="aa">后台管理</span>
       </div>
       <div class="icon">
-        <el-icon><Operation /></el-icon>
+        <el-icon
+          @click="
+            () => {
+              userStore.toggleMenu()
+            }
+          "
+          ><Operation
+        /></el-icon>
         <el-icon><Pointer /></el-icon>
       </div>
     </div>
@@ -121,8 +86,6 @@ const handleCommand = (command) => {
         </el-dropdown>
       </div>
     </div>
-    <!-- <el-drawer v-model="drawer" title="修改密码">
-    </el-drawer> -->
     <fromDrawer ref="FormDrawer" title="修改密码" @submit="repasswordHandle">
       <el-form
         :model="ruleForm"

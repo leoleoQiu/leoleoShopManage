@@ -11,7 +11,14 @@ const router = createRouter({
       meta: { title: '首页' },
       children: [
         {
-          path: ''
+          path: '/index',
+          component: () => import('@/views/home/index.vue'),
+          meta: { title: '首页' }
+        },
+        {
+          path: '/good/list',
+          component: () => import('@/views/Manage/index.vue'),
+          meta: { title: '商品列表' }
         }
       ]
     },

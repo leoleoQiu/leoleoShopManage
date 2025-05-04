@@ -18,12 +18,18 @@ export const useUserStore = defineStore(
       const res = await getAdminMenuAPI(token.value)
       userMenu.value = res.data
     }
+    const MenuWidth = ref('250px')
+    const toggleMenu = () => {
+      MenuWidth.value = MenuWidth.value === '250px' ? '64px' : '250px'
+    }
     return {
       token,
       getToken,
       removeToken,
       userMenu,
-      getUserMenu
+      getUserMenu,
+      MenuWidth,
+      toggleMenu
     }
   },
   {
