@@ -33,6 +33,11 @@ instance.interceptors.response.use(
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    const userStore = useUserStore()
+    if (error.response.data.msg == '非法token，请先登录！') {
+      userStore.removeToken()
+      location.reload()
+    }
     ElMessage.error({
       message: error.response.data.msg || '请求失败'
     })

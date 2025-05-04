@@ -21,3 +21,15 @@ export const layoutAPI = () => {
     method: 'post'
   })
 }
+
+export const repasswordAPI = ({ password, repassword }) => {
+  return request({
+    url: '/admin/updatepassword',
+    method: 'post',
+    data: {
+      oldpassword: password,
+      password: repassword,
+      repassword: repassword
+    }
+  })
+}

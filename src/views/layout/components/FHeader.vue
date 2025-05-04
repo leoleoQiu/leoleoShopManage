@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import {
   Operation,
   Pointer,
@@ -8,6 +9,72 @@ import {
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores'
 const userStore = useUserStore()
+
+// 退出登录
+import { layoutAPI } from '@/api/login'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const handleExit = () => {
+  // 退出登录逻辑
+  ElMessageBox.confirm('你确定要退出么?', 'Warning', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+    .then(async () => {
+      await layoutAPI()
+      await userStore.removeToken()
+      router.push('/login')
+    })
+    .catch(() => {})
+}
+const drawer = ref(false)
+//修改密码
+import { User, Lock } from '@element-plus/icons-vue'
+import { repasswordAPI } from '@/api/login'
+const ruleForm = ref({
+  username: '',
+  password: '',
+  repassword: ''
+})
+const forms = ref()
+const rules = ref({
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 4, max: 20, message: '长度在 4 到 20 个字符', trigger: 'blur' }
+  ],
+  repassword: [
+    { required: true, message: '请再次输入密码', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (value !== ruleForm.value.password) {
+          callback(new Error('两次输入密码不一致'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ]
+})
+const repasswordHandle = async () => {
+  await forms.value.validate()
+  await repasswordAPI(ruleForm.value)
+}
+const handleCommand = (command) => {
+  switch (command) {
+    case 'password':
+      drawer.value = true
+      break
+    case 'exit':
+      handleExit()
+      break
+  }
+}
 </script>
 <template>
   <div class="f-header">
@@ -26,7 +93,7 @@ const userStore = useUserStore()
         <el-icon><Setting /></el-icon>
       </div>
       <div class="menu">
-        <el-dropdown>
+        <el-dropdown @command="handleCommand">
           <span class="el-dropdown-link dropdown">
             <el-avatar :size="40" :src="userStore.userMenu.avatar" />
             <div>LEOLEO</div>
@@ -36,13 +103,49 @@ const userStore = useUserStore()
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>修改密码</el-dropdown-item>
-              <el-dropdown-item>退出登录</el-dropdown-item>
+              <el-dropdown-item command="password">修改密码</el-dropdown-item>
+              <el-dropdown-item command="exit">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
     </div>
+    <el-drawer v-model="drawer" title="修改密码">
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        label-width="auto"
+        ref="forms"
+        label-position="top"
+      >
+        <el-form-item label="用户" prop="username">
+          <el-input v-model="ruleForm.username">
+            <template #prefix>
+              <el-icon><User /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" v-model="ruleForm.password">
+            <template #prefix>
+              <el-icon><Lock /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="repassword">
+          <el-input type="password" v-model="ruleForm.repassword">
+            <template #prefix>
+              <el-icon><Lock /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button color="#6272f6" class="button" @click="repasswordHandle">
+            >确认修改</el-button
+          >
+        </el-form-item>
+      </el-form>
+    </el-drawer>
   </div>
 </template>
 <style lang="scss" scoped>
