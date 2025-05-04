@@ -4,8 +4,7 @@ import App from './App.vue'
 import router from './router'
 import 'normalize.css'
 import '@/style/reset.scss'
-import 'element-plus/dist/index.css'
-
+import 'nprogress/nprogress.css'
 const app = createApp(App)
 
 app.use(pinia)

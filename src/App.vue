@@ -2,4 +2,9 @@
 <template>
   <router-view></router-view>
 </template>
-<style scoped></style>
+<style>
+#nprogress .bar {
+  background-color: pink !important;
+  height: 3px !important;
+}
+</style>

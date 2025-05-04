@@ -1,24 +1,28 @@
 <script setup>
-import { layoutAPI } from '@/api/login'
-import { useUserStore } from '@/stores'
-import { useRouter } from 'vue-router'
-const router = useRouter()
-const userStore = useUserStore()
-const handleExit = () => {
-  // 退出登录逻辑
-  ElMessageBox.confirm('你确定要退出么?', 'Warning', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-    .then(async () => {
-      await layoutAPI()
-      await userStore.removeToken()
-      router.push('/login')
-    })
-    .catch(() => {})
-}
+import FHeader from './components/FHeader.vue'
+import FAside from './components/FAside.vue'
+import FMain from './components/FMain.vue'
 </script>
 <template>
-  <el-button @click="handleExit">退出</el-button>
+  <el-container>
+    <el-header>
+      <f-header></f-header>
+    </el-header>
+    <el-container>
+      <el-aside>
+        <f-aside></f-aside>
+      </el-aside>
+      <el-container>
+        <el-header><f-main></f-main></el-header>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
+      </el-container>
+    </el-container>
+  </el-container>
 </template>
+<style>
+.el-header {
+  padding: 0;
+}
+</style>
