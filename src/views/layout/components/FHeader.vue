@@ -8,6 +8,7 @@ import {
   ArrowDown
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores'
+import fromDrawer from '@/components/FormDrawer.vue'
 const userStore = useUserStore()
 
 // 退出登录
@@ -28,7 +29,6 @@ const handleExit = () => {
     })
     .catch(() => {})
 }
-const drawer = ref(false)
 //修改密码
 import { User, Lock } from '@element-plus/icons-vue'
 import { repasswordAPI } from '@/api/login'
@@ -62,13 +62,24 @@ const rules = ref({
   ]
 })
 const repasswordHandle = async () => {
-  await forms.value.validate()
-  await repasswordAPI(ruleForm.value)
+  try {
+    await forms.value.validate()
+    FormDrawer.value.handleLoading()
+    await repasswordAPI(ruleForm.value)
+    ElMessage({
+      message: '修改成功',
+      type: 'success'
+    })
+  } finally {
+    FormDrawer.value.handleLoadingClose()
+  }
 }
+const FormDrawer = ref()
 const handleCommand = (command) => {
   switch (command) {
     case 'password':
-      drawer.value = true
+      // drawer.value = true
+      FormDrawer.value.open()
       break
     case 'exit':
       handleExit()
@@ -110,7 +121,9 @@ const handleCommand = (command) => {
         </el-dropdown>
       </div>
     </div>
-    <el-drawer v-model="drawer" title="修改密码">
+    <!-- <el-drawer v-model="drawer" title="修改密码">
+    </el-drawer> -->
+    <fromDrawer ref="FormDrawer" title="修改密码" @submit="repasswordHandle">
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -139,13 +152,8 @@ const handleCommand = (command) => {
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button color="#6272f6" class="button" @click="repasswordHandle">
-            >确认修改</el-button
-          >
-        </el-form-item>
       </el-form>
-    </el-drawer>
+    </fromDrawer>
   </div>
 </template>
 <style lang="scss" scoped>
