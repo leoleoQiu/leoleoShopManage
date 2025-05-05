@@ -27,8 +27,16 @@ const addTab = (tab) => {
 const changeTab = (e) => {
   router.push(e)
 }
-const removeTab = (targetName) => {
-  console.log(targetName)
+const removeTab = (e) => {
+  console.log(e)
+  if (activeTag.value === e) {
+    const nowindex = TabList.value.findIndex((item) => item.path === e)
+    TabList.value = TabList.value.filter((item) => item.path !== e)
+    router.push(TabList.value[nowindex - 1])
+  } else {
+    TabList.value = TabList.value.filter((item) => item.path !== e)
+  }
+  pageStore.updateTagList(TabList.value)
 }
 </script>
 <template>
