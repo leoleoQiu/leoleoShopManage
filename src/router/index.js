@@ -62,22 +62,26 @@ const router = createRouter({
   routes
 })
 
+//定义变量防止重复加载
+let GetMenu = false
 router.beforeEach(async (to) => {
   NProgress.start()
   const userStore = useUserStore()
   if (to.path !== '/login' && !userStore.token) {
     return '/login'
   }
-  if (userStore.token) {
+  let hasNewRoute = false
+  if (userStore.token && !GetMenu) {
     await userStore.getUserMenu()
-    const hasNewRoute = addRoute(userStore.userMenu.menus)
-    //动态路由只能注册，所以要用push或者replace
-    if (hasNewRoute && to.name === 'NotFound') {
-      return { path: to.fullPath }
-    }
+    GetMenu = true
+    hasNewRoute = addRoute(userStore.userMenu.menus)
   }
   let title = (to.meta.title || '') + ' - LEOLEOQiuuu'
   document.title = title
+  //动态路由只能注册，所以要用push或者replace
+  if (hasNewRoute) {
+    return { path: to.fullPath }
+  }
 })
 
 router.afterEach(() => {

@@ -1,2 +1,4 @@
 <script setup></script>
-<template>首页</template>
+<template>
+  <div>首页</div>
+</template>

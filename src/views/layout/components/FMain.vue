@@ -1,43 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-import { useRoute, onBeforeRouteUpdate, useRouter } from 'vue-router'
-import { usePageStore } from '@/stores'
-const pageStore = usePageStore()
-const route = useRoute()
-const router = useRouter()
-const activeTag = ref(route.path)
-const TabList = ref(pageStore.TagList)
-
-onBeforeRouteUpdate((to) => {
-  activeTag.value = to.fullPath
-  addTab({
-    title: to.meta.title,
-    path: to.fullPath
-  })
-})
-//如果没有的话就增加 可以借助onBeforeRouteUpdate
-const addTab = (tab) => {
-  const haveTab = TabList.value.find((e) => e.path === tab.path)
-  if (!haveTab) {
-    TabList.value.push(tab)
-    pageStore.updateTagList(TabList.value)
-  }
-}
-
-const changeTab = (e) => {
-  router.push(e)
-}
-const removeTab = (e) => {
-  console.log(e)
-  if (activeTag.value === e) {
-    const nowindex = TabList.value.findIndex((item) => item.path === e)
-    TabList.value = TabList.value.filter((item) => item.path !== e)
-    router.push(TabList.value[nowindex - 1])
-  } else {
-    TabList.value = TabList.value.filter((item) => item.path !== e)
-  }
-  pageStore.updateTagList(TabList.value)
-}
+import { Tabfunction } from '@/composables/Tabs'
+const { TabList, activeTag, changeTab, removeTab, handleClose } = Tabfunction()
 </script>
 <template>
   <div class="f-tags">
@@ -58,7 +21,7 @@ const removeTab = (e) => {
       </el-tab-pane>
     </el-tabs>
     <span class="right">
-      <el-dropdown>
+      <el-dropdown @command="handleClose">
         <span class="el-dropdown-link">
           <el-icon class="el-icon--right">
             <arrow-down />
@@ -66,9 +29,8 @@ const removeTab = (e) => {
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>Action 1</el-dropdown-item>
-            <el-dropdown-item>Action 2</el-dropdown-item>
-            <el-dropdown-item>Action 3</el-dropdown-item>
+            <el-dropdown-item command="all">关闭全部</el-dropdown-item>
+            <el-dropdown-item command="else">关闭其他</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
