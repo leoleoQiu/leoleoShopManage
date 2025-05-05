@@ -1,61 +1,51 @@
 <script setup>
 import { ref } from 'vue'
-// let tabIndex = 2
-const editableTabsValue = ref('2')
-const editableTabs = ref([
-  {
-    title: 'Tab 1',
-    name: '1',
-    content: 'Tab 1 content'
-  },
-  {
-    title: 'Tab 2',
-    name: '2',
-    content: 'Tab 2 content'
-  }
-])
+import { useRoute, onBeforeRouteUpdate, useRouter } from 'vue-router'
+import { usePageStore } from '@/stores'
+const pageStore = usePageStore()
+const route = useRoute()
+const router = useRouter()
+const activeTag = ref(route.path)
+const TabList = ref(pageStore.TagList)
 
-// const addTab = (targetName) => {
-//   const newTabName = `${++tabIndex}`
-//   editableTabs.value.push({
-//     title: 'New Tab',
-//     name: newTabName,
-//     content: 'New Tab content'
-//   })
-//   editableTabsValue.value = newTabName
-// }
+onBeforeRouteUpdate((to) => {
+  activeTag.value = to.fullPath
+  addTab({
+    title: to.meta.title,
+    path: to.fullPath
+  })
+})
+//如果没有的话就增加 可以借助onBeforeRouteUpdate
+const addTab = (tab) => {
+  const haveTab = TabList.value.find((e) => e.path === tab.path)
+  if (!haveTab) {
+    TabList.value.push(tab)
+    pageStore.updateTagList(TabList.value)
+  }
+}
+
+const changeTab = (e) => {
+  router.push(e)
+}
 const removeTab = (targetName) => {
-  const tabs = editableTabs.value
-  let activeName = editableTabsValue.value
-  if (activeName === targetName) {
-    tabs.forEach((tab, index) => {
-      if (tab.name === targetName) {
-        const nextTab = tabs[index + 1] || tabs[index - 1]
-        if (nextTab) {
-          activeName = nextTab.name
-        }
-      }
-    })
-  }
-
-  editableTabsValue.value = activeName
-  editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
+  console.log(targetName)
 }
 </script>
 <template>
   <div class="f-tags">
     <el-tabs
-      v-model="editableTabsValue"
+      v-model="activeTag"
       type="card"
       class="demo-tabs"
-      closable
       @tab-remove="removeTab"
+      @tab-change="changeTab"
     >
       <el-tab-pane
-        v-for="item in editableTabs"
-        :key="item.name"
+        :closable="item.path !== '/'"
+        v-for="item in TabList"
+        :key="item.path"
         :label="item.title"
-        :name="item.name"
+        :name="item.path"
       >
       </el-tab-pane>
     </el-tabs>
@@ -71,8 +61,6 @@ const removeTab = (targetName) => {
             <el-dropdown-item>Action 1</el-dropdown-item>
             <el-dropdown-item>Action 2</el-dropdown-item>
             <el-dropdown-item>Action 3</el-dropdown-item>
-            <el-dropdown-item disabled>Action 4</el-dropdown-item>
-            <el-dropdown-item divided>Action 5</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

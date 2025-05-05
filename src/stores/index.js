@@ -5,3 +5,4 @@ pinia.use(persist)
 export default pinia
 
 export * from '@/stores/modules/user'
+export * from '@/stores/modules/page'

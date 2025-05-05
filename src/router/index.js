@@ -51,10 +51,10 @@ const addRoute = (menu) => {
         findAndAddRoute(item.child)
       }
     })
-    return hasNewRoute
   }
   findAndAddRoute(menu)
   console.log(router.getRoutes())
+  return hasNewRoute
 }
 
 const router = createRouter({
@@ -68,18 +68,16 @@ router.beforeEach(async (to) => {
   if (to.path !== '/login' && !userStore.token) {
     return '/login'
   }
-  let hasNewRoute = false
   if (userStore.token) {
     await userStore.getUserMenu()
-    addRoute(userStore.userMenu.menus)
-    hasNewRoute = userStore.userMenu.length > 0
+    const hasNewRoute = addRoute(userStore.userMenu.menus)
+    //动态路由只能注册，所以要用push或者replace
+    if (hasNewRoute && to.name === 'NotFound') {
+      return { path: to.fullPath }
+    }
   }
   let title = (to.meta.title || '') + ' - LEOLEOQiuuu'
   document.title = title
-  //动态路由只能注册，所以要用push或者replace
-  if (hasNewRoute) {
-    return to.fullPath
-  }
 })
 
 router.afterEach(() => {
