@@ -78,7 +78,7 @@ router.beforeEach(async (to) => {
   }
   let title = (to.meta.title || '') + ' - LEOLEOQiuuu'
   document.title = title
-  //动态路由只能注册，所以要用push或者replace
+  //动态路由第一次注册要用push或者replace
   if (hasNewRoute) {
     return { path: to.fullPath }
   }

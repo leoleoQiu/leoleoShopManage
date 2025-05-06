@@ -21,7 +21,7 @@ const userStore = useUserStore()
         <f-aside></f-aside>
       </el-aside>
       <el-container>
-        <el-header><f-main></f-main></el-header>
+        <el-header class="f-flag"><f-main></f-main></el-header>
         <el-main>
           <router-view v-slot="{ Component }">
             <transition name="fade">
@@ -53,5 +53,8 @@ const userStore = useUserStore()
 }
 .fade-enter-active {
   transition-delay: 0.3s;
+}
+.f-flag {
+  border-bottom: 3px dashed black;
 }
 </style>
