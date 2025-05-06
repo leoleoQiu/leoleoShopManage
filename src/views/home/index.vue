@@ -69,7 +69,7 @@ getShopData()
 
     <el-row :gutter="20" style="margin-top: 20px">
       <el-col :span="12">
-        <EchartShow></EchartShow>
+        <EchartShow v-permission="['getStatistics3,GET']"></EchartShow>
       </el-col>
       <el-col :span="12">
         <ShopShow

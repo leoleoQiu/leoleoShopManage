@@ -27,8 +27,10 @@ import { getEchartsData } from '@/api/home'
 let myChart
 onMounted(async () => {
   let chartDom = document.getElementById('echart-main')
-  myChart = echarts.init(chartDom)
-  getEchartMsg()
+  if (chartDom) {
+    myChart = echarts.init(chartDom)
+    getEchartMsg()
+  }
 })
 const getEchartMsg = async () => {
   let option = {
@@ -67,7 +69,9 @@ import { useTemplateRef } from 'vue'
 const el = useTemplateRef('el')
 
 useResizeObserver(el, () => {
-  myChart.resize()
+  if (myChart) {
+    myChart.resize()
+  }
 })
 </script>
 <template>
