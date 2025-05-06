@@ -5,7 +5,6 @@ const panels = ref([])
 const getHomeData = async () => {
   const res = await getHomeDataAPI()
   panels.value = res.data.panels
-  console.log(panels.value)
 }
 getHomeData()
 </script>
@@ -41,7 +40,9 @@ getHomeData()
               <el-tag :type="item.unitColor">{{ item.unit }}</el-tag>
             </div>
           </template>
-          <span class="Value">{{ item.value }}</span>
+          <span class="Value">
+            <NumberRoll :value="item.value"></NumberRoll>
+          </span>
           <template #footer
             ><span>{{ item.subTitle }}---{{ item.subValue }}</span></template
           >
