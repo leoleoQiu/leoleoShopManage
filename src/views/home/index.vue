@@ -33,7 +33,11 @@ getHomeData()
       </template>
 
       <el-col :sm="12" :lg="6" v-for="item in panels" :key="item.title">
-        <el-card style="max-width: 480px; min-height: 150px" class="card">
+        <el-card
+          style="max-width: 480px; min-height: 150px"
+          class="card"
+          shadow="hover"
+        >
           <template #header>
             <div class="card-header">
               <span style="font-weight: 500">{{ item.title }}</span>
@@ -49,6 +53,8 @@ getHomeData()
         </el-card>
       </el-col>
     </el-row>
+
+    <IndexNav></IndexNav>
   </div>
 </template>
 

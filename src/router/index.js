@@ -33,7 +33,7 @@ const asyncRoutes = [
   {
     path: '/goods/list',
     name: 'goods-list',
-    component: () => import('@/views/Manage/index.vue'),
+    component: () => import('@/views/Goods/index.vue'),
     meta: { title: '商品列表' }
   }
 ]
