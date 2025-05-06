@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { getHomeDataAPI } from '@/api/home.js'
+import EchartShow from './components/EchartsShow.vue'
 const panels = ref([])
 const getHomeData = async () => {
   const res = await getHomeDataAPI()
@@ -55,6 +56,12 @@ getHomeData()
     </el-row>
 
     <IndexNav></IndexNav>
+    <el-row :gutter="20" style="margin-top: 20px">
+      <el-col :span="12">
+        <EchartShow></EchartShow>
+      </el-col>
+      <el-col :span="12"></el-col>
+    </el-row>
   </div>
 </template>
 

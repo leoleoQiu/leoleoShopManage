@@ -4,3 +4,12 @@ export const getHomeDataAPI = () => {
     url: '/admin/statistics1'
   })
 }
+
+export const getEchartsData = (type) => {
+  return request({
+    url: 'admin/statistics3',
+    params: {
+      type
+    }
+  })
+}
