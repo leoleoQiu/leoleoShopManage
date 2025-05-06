@@ -45,7 +45,11 @@ const iconNavs = [
 <template>
   <el-row :gutter="20" style="margin-top: 10px">
     <el-col :sm="6" :lg="3" v-for="item in iconNavs" :key="item.path">
-      <el-card shadow="hover" style="cursor: pointer">
+      <el-card
+        shadow="hover"
+        style="cursor: pointer"
+        @click="$router.push(item.path)"
+      >
         <div class="card-nav">
           <component
             :is="item.icon"
