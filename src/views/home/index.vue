@@ -1,13 +1,23 @@
 <script setup>
 import { ref } from 'vue'
-import { getHomeDataAPI } from '@/api/home.js'
+import { getHomeDataAPI, getShopDataAPI } from '@/api/home.js'
 import EchartShow from './components/EchartsShow.vue'
+import ShopShow from './components/ShopShow.vue'
 const panels = ref([])
 const getHomeData = async () => {
   const res = await getHomeDataAPI()
   panels.value = res.data.panels
 }
 getHomeData()
+
+//商铺信息
+const ShopList = ref([])
+const getShopData = async () => {
+  const res = await getShopDataAPI()
+  console.log(res)
+  ShopList.value = res.data
+}
+getShopData()
 </script>
 <template>
   <div class="home">
@@ -56,11 +66,24 @@ getHomeData()
     </el-row>
 
     <IndexNav></IndexNav>
+
     <el-row :gutter="20" style="margin-top: 20px">
       <el-col :span="12">
         <EchartShow></EchartShow>
       </el-col>
-      <el-col :span="12"></el-col>
+      <el-col :span="12">
+        <ShopShow
+          title="商铺"
+          Tab="商品展示"
+          :shopData="ShopList.goods"
+        ></ShopShow>
+        <ShopShow
+          style="margin-top: 5px"
+          title="订单"
+          Tab="订单展示"
+          :shopData="ShopList.order"
+        ></ShopShow>
+      </el-col>
     </el-row>
   </div>
 </template>

@@ -49,7 +49,6 @@ const getEchartMsg = async () => {
   myChart.showLoading()
   try {
     const res = await getEchartsData(currentTag.value)
-    console.log(res)
     option.xAxis.data = res.data.x
     option.series[0].data = res.data.y
     myChart.setOption(option)

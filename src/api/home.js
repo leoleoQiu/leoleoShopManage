@@ -13,3 +13,9 @@ export const getEchartsData = (type) => {
     }
   })
 }
+
+export const getShopDataAPI = () => {
+  return request({
+    url: 'admin/statistics2'
+  })
+}
