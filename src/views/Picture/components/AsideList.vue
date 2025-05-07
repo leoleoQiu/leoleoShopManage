@@ -1,0 +1,50 @@
+<script setup>
+const props = defineProps({
+  title: String,
+  active: Boolean
+})
+</script>
+<template>
+  <div class="aside-list" :class="{ active: active }">
+    <div class="text">{{ props.title }}</div>
+    <div class="button">
+      <el-button
+        type="primary"
+        text
+        style="padding-left: 0; padding-right: 0"
+        @click="$emit('aaa', 123)"
+      >
+        <el-icon style="font-size: 20px"><Edit /></el-icon>
+      </el-button>
+      <el-button type="primary" text style="padding-left: 0; padding-right: 0">
+        <el-icon style="font-size: 20px"><Close /></el-icon>
+      </el-button>
+    </div>
+  </div>
+</template>
+<style lang="scss" scoped>
+.active {
+  background-color: rgb(198, 226, 255);
+}
+.aside-list {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 60px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  &:hover {
+    background-color: rgb(198, 226, 255);
+  }
+  .text {
+    font-weight: 300;
+    margin: 10px;
+    flex: 1;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+</style>
