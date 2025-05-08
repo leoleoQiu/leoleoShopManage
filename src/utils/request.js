@@ -39,7 +39,9 @@ instance.interceptors.response.use(
       location.reload()
     }
     ElMessage.error({
-      message: error.response.data.msg || '请求失败'
+      message: error.response.data.msg || '请求失败',
+      // 是否渲染html
+      dangerouslyUseHTMLString: true
     })
     return Promise.reject(error.response.data.msg)
   }

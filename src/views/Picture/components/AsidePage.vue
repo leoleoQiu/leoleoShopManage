@@ -1,7 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 import AsideList from './AsideList.vue'
-import { getPictureAPI, AddPictureAPI, EditPictureAPI } from '@/api/picture'
+import {
+  getPictureAPI,
+  AddPictureAPI,
+  EditPictureAPI,
+  DeletePictureAPI
+} from '@/api/picture'
 const pictureList = ref([])
 //设置当前选中的
 const activeItem = ref(0)
@@ -46,11 +51,25 @@ const onAdd = () => {
   formData.value.order = 50
   drawerRef.value.open()
 }
+//编辑
 const onEdit = (row) => {
   proID.value = row.id
   formData.value.name = row.name
   formData.value.order = row.order
   drawerRef.value.open()
+}
+//删除
+const onDelete = async (id) => {
+  loading.value = true
+  try {
+    await DeletePictureAPI(id)
+    ElMessage({
+      message: '成功删除',
+      type: 'success'
+    })
+  } finally {
+    loading.value = false
+  }
 }
 //提交表单
 const onSubmit = async () => {
@@ -93,7 +112,7 @@ defineExpose({
         :key="item.id"
         :active="activeItem === item.id"
         @edit="onEdit(item)"
-        @delete="onDelete"
+        @delete="onDelete(item.id)"
       ></AsideList>
       <AsideList title="模拟很长很长很长很长的文案"></AsideList>
     </div>

@@ -29,3 +29,10 @@ export const EditPictureAPI = (id, name, order) => {
     }
   })
 }
+
+export const DeletePictureAPI = (id) => {
+  return request({
+    url: '/admin/image_class/' + id + '/delete',
+    method: 'post'
+  })
+}
