@@ -32,9 +32,6 @@ const props = defineProps({
   justify-content: space-between;
   align-items: center;
   min-height: 60px;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
   &:hover {
     background-color: rgb(198, 226, 255);
   }

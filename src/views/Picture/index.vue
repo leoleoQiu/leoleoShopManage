@@ -15,35 +15,11 @@ const h = windowHeight - 60 - 55 - 50
 </template>
 <style lang="scss" scoped>
 .image-body {
-  background-color: rgb(236, 245, 255);
+  background-color: rgb(244, 244, 245);
   .image-header {
     min-height: 100px;
     display: flex;
     align-items: center;
-  }
-  .image-main {
-    .image-aside,
-    .image-content {
-      background-color: white;
-      position: relative;
-      .image-top {
-        background-color: gray;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 50px;
-        overflow-y: auto;
-      }
-      .image-bottom {
-        position: absolute;
-        background-color: gray;
-        height: 50px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-      }
-    }
   }
 }
 </style>
