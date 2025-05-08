@@ -8,6 +8,11 @@ const Aside = ref(null)
 const addPicture = () => {
   Aside.value.onAdd()
 }
+// 右侧图片列表获取
+const ImageModuleRef = ref(null)
+const gainPictureList = (id) => {
+  ImageModuleRef.value.getImageData(id)
+}
 </script>
 <template>
   <el-container class="image-body" :style="{ height: h + 'px' }">
@@ -15,8 +20,8 @@ const addPicture = () => {
       <el-button @click="addPicture">新增图片</el-button>
     </el-header>
     <el-container class="image-main">
-      <AsidePage ref="Aside"></AsidePage>
-      <ImagePage></ImagePage>
+      <AsidePage ref="Aside" @activeChange="gainPictureList"></AsidePage>
+      <ImagePage ref="ImageModuleRef"></ImagePage>
     </el-container>
   </el-container>
 </template>

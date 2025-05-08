@@ -12,7 +12,7 @@ const props = defineProps({
         type="primary"
         text
         style="padding-left: 0; padding-right: 0"
-        @click="$emit('edit')"
+        @click.stop="$emit('edit')"
       >
         <el-icon style="font-size: 20px"><Edit /></el-icon>
       </el-button>

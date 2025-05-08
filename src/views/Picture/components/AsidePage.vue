@@ -21,7 +21,8 @@ const getPicture = async (page = 1) => {
     const res = await getPictureAPI(currentPage.value)
     pictureList.value = res.data.list
     total.value = res.data.totalCount
-    activeItem.value = res.data.list[0].id
+    const item = res.data.list[0].id
+    ActiveChange(item)
   } finally {
     loading.value = false
   }
@@ -99,6 +100,12 @@ const onSubmit = async () => {
     drawerRef.value.close()
   }
 }
+// 列表改变
+const emit = defineEmits(['activeChange'])
+const ActiveChange = (id) => {
+  activeItem.value = id
+  emit('activeChange', id)
+}
 defineExpose({
   onAdd
 })
@@ -113,6 +120,7 @@ defineExpose({
         :active="activeItem === item.id"
         @edit="onEdit(item)"
         @delete="onDelete(item.id)"
+        @click="ActiveChange(item.id)"
       ></AsideList>
       <AsideList title="模拟很长很长很长很长的文案"></AsideList>
     </div>
