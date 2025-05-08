@@ -6,7 +6,7 @@ const windowHeight = window.innerHeight || document.body.clientHeight
 const h = windowHeight - 60 - 55 - 50
 const Aside = ref(null)
 const addPicture = () => {
-  Aside.value.onEdit()
+  Aside.value.onAdd()
 }
 </script>
 <template>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import AsideList from './AsideList.vue'
-import { getPictureAPI, AddPictureAPI } from '@/api/picture'
+import { getPictureAPI, AddPictureAPI, EditPictureAPI } from '@/api/picture'
 const pictureList = ref([])
 //设置当前选中的
 const activeItem = ref(0)
@@ -25,6 +25,7 @@ getPicture()
 //抽屉组件
 const drawerRef = ref(null)
 const formRef = ref(null)
+const proID = ref(0)
 const formData = ref({
   name: '',
   order: 50
@@ -38,18 +39,41 @@ const rules = {
     }
   ]
 }
-const onEdit = () => {
+//新增
+const onAdd = () => {
+  proID.value = 0
+  formData.value.name = ''
+  formData.value.order = 50
   drawerRef.value.open()
 }
+const onEdit = (row) => {
+  proID.value = row.id
+  formData.value.name = row.name
+  formData.value.order = row.order
+  drawerRef.value.open()
+}
+//提交表单
 const onSubmit = async () => {
   await formRef.value.validate()
   try {
     drawerRef.value.handleLoading()
-    await AddPictureAPI(formData.value)
-    ElMessage({
-      message: '添加成功',
-      type: 'success'
-    })
+    if (!proID.value) {
+      await AddPictureAPI(formData.value)
+      ElMessage({
+        message: '添加成功',
+        type: 'success'
+      })
+    } else {
+      await EditPictureAPI(
+        proID.value,
+        formData.value.name,
+        formData.value.order
+      )
+      ElMessage({
+        message: '修改成功',
+        type: 'success'
+      })
+    }
     getPicture()
   } finally {
     drawerRef.value.handleLoadingClose()
@@ -57,7 +81,7 @@ const onSubmit = async () => {
   }
 }
 defineExpose({
-  onEdit
+  onAdd
 })
 </script>
 <template>
@@ -68,7 +92,7 @@ defineExpose({
         :title="item.name"
         :key="item.id"
         :active="activeItem === item.id"
-        @edit="onEdit"
+        @edit="onEdit(item)"
         @delete="onDelete"
       ></AsideList>
       <AsideList title="模拟很长很长很长很长的文案"></AsideList>

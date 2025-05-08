@@ -18,3 +18,14 @@ export const AddPictureAPI = ({ name, order }) => {
     }
   })
 }
+
+export const EditPictureAPI = (id, name, order) => {
+  return request({
+    url: '/admin/image_class/' + id,
+    method: 'post',
+    data: {
+      name,
+      order
+    }
+  })
+}
