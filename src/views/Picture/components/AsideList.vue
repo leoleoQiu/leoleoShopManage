@@ -18,7 +18,6 @@ const props = defineProps({
       </el-button>
       <el-popconfirm
         width="220"
-        :icon="InfoFilled"
         icon-color="#626AEF"
         title="你确认要删除吗?"
         @confirm="$emit('delete')"

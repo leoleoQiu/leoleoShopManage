@@ -13,11 +13,15 @@ const ImageModuleRef = ref(null)
 const gainPictureList = (id) => {
   ImageModuleRef.value.getImageData(id)
 }
+const UploadImg = () => {
+  ImageModuleRef.value.UploadOpen()
+}
 </script>
 <template>
   <el-container class="image-body" :style="{ height: h + 'px' }">
     <el-header class="image-header">
-      <el-button @click="addPicture">新增图片</el-button>
+      <el-button @click="addPicture">新增列表</el-button>
+      <el-button @click="UploadImg">上传图片</el-button>
     </el-header>
     <el-container class="image-main">
       <AsidePage ref="Aside" @activeChange="gainPictureList"></AsidePage>

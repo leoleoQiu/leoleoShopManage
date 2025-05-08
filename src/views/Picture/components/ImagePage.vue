@@ -10,6 +10,7 @@ const total = ref(0)
 const ImageList = ref([])
 const currentId = ref(0)
 const Loading = ref(false)
+const image_class_id = ref(0)
 //获取数据渲染
 const getImageData = async (id) => {
   Loading.value = true
@@ -18,6 +19,7 @@ const getImageData = async (id) => {
     const res = await getClassPictureAPI(id, currentPage.value)
     console.log(res)
     ImageList.value = res.data.list
+    image_class_id.value = res.data.list[0].image_class_id
   } finally {
     Loading.value = false
   }
@@ -43,7 +45,17 @@ const DeleteImg = async (ImgId) => {
   await DeleteClassPictureAPI([ImgId])
   getImageData(currentId.value)
 }
-defineExpose({ getImageData })
+//上传图片
+import UploadFile from './UploadFile.vue'
+const drawer = ref(false)
+const UploadOpen = () => {
+  drawer.value = true
+}
+const UploadSuccess = () => {
+  getImageData(currentId.value)
+  drawer.value = false
+}
+defineExpose({ getImageData, UploadOpen })
 </script>
 <template>
   <el-main class="image-content" v-loading="Loading">
@@ -87,10 +99,15 @@ defineExpose({ getImageData })
         layout="prev, next"
         v-model:current-page="currentPage"
         :total="total"
-        @update:current-page="getPicture"
       />
     </div>
   </el-main>
+  <el-drawer v-model="drawer" title="上传文件">
+    <UploadFile
+      :data="{ image_class_id }"
+      @success="UploadSuccess"
+    ></UploadFile>
+  </el-drawer>
 </template>
 <style lang="scss" scoped>
 .image-content {
