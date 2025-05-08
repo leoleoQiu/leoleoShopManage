@@ -1,14 +1,21 @@
 <script setup>
+import { ref } from 'vue'
 import AsidePage from './components/AsidePage.vue'
 import ImagePage from './components/ImagePage.vue'
 const windowHeight = window.innerHeight || document.body.clientHeight
 const h = windowHeight - 60 - 55 - 50
+const Aside = ref(null)
+const addPicture = () => {
+  Aside.value.onEdit()
+}
 </script>
 <template>
   <el-container class="image-body" :style="{ height: h + 'px' }">
-    <el-header class="image-header">Header</el-header>
+    <el-header class="image-header">
+      <el-button @click="addPicture">新增图片</el-button>
+    </el-header>
     <el-container class="image-main">
-      <AsidePage></AsidePage>
+      <AsidePage ref="Aside"></AsidePage>
       <ImagePage></ImagePage>
     </el-container>
   </el-container>

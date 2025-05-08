@@ -12,11 +12,16 @@ const props = defineProps({
         type="primary"
         text
         style="padding-left: 0; padding-right: 0"
-        @click="$emit('aaa', 123)"
+        @click="$emit('edit')"
       >
         <el-icon style="font-size: 20px"><Edit /></el-icon>
       </el-button>
-      <el-button type="primary" text style="padding-left: 0; padding-right: 0">
+      <el-button
+        type="primary"
+        text
+        style="padding-left: 0; padding-right: 0"
+        @click="$emit('delete')"
+      >
         <el-icon style="font-size: 20px"><Close /></el-icon>
       </el-button>
     </div>
