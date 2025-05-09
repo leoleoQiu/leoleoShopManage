@@ -71,6 +71,12 @@ const asyncRoutes = [
     name: 'coupon/list',
     component: () => import('@/views/Coupon/index.vue'),
     meta: { title: '优惠卷' }
+  },
+  {
+    path: '/manager/list',
+    name: 'manager/list',
+    component: () => import('@/views/Manager/index.vue'),
+    meta: { title: '管理员' }
   }
 ]
 
@@ -89,7 +95,6 @@ const addRoute = (menu) => {
     })
   }
   findAndAddRoute(menu)
-  console.log(router.getRoutes())
   return hasNewRoute
 }
 

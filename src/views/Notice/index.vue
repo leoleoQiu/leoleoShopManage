@@ -51,7 +51,7 @@ const rules = {
     }
   ]
 }
-const addNotice = () => {
+const addNotice = async () => {
   drawerTitle.value = '新增'
   RowId.value = null
   formData.value = { title: '', content: '' }
@@ -59,7 +59,7 @@ const addNotice = () => {
 }
 //编辑
 const RowId = ref(null)
-const handleEdit = (row) => {
+const handleEdit = async (row) => {
   drawerTitle.value = '编辑'
   RowId.value = row.row.id
   formData.value.title = row.row.title
