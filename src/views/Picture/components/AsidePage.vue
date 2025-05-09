@@ -134,7 +134,7 @@ defineExpose({
       />
     </div>
   </el-aside>
-  <FormDrawer @submit="onSubmit" ref="drawerRef" title="新增">
+  <FormDrawer @submit="onSubmit" ref="drawerRef" title="增加">
     <el-form
       style="max-width: 600px"
       label-width="80"
