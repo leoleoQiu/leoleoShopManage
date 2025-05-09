@@ -16,28 +16,30 @@ const props = defineProps({
       >
         <el-icon style="font-size: 20px"><Edit /></el-icon>
       </el-button>
-      <el-popconfirm
-        width="220"
-        icon-color="#626AEF"
-        title="你确认要删除吗?"
-        @confirm="$emit('delete')"
-      >
-        <template #reference>
-          <el-button
-            type="primary"
-            text
-            style="padding-left: 0; padding-right: 0"
-          >
-            <el-icon style="font-size: 20px"><Close /></el-icon>
-          </el-button>
-        </template>
-        <template #actions="{ confirm, cancel }">
-          <el-button size="small" @click="cancel">No!</el-button>
-          <el-button type="danger" size="small" @click="confirm">
-            Yes?
-          </el-button>
-        </template>
-      </el-popconfirm>
+      <span @click.stop="() => {}">
+        <el-popconfirm
+          width="220"
+          icon-color="#626AEF"
+          title="你确认要删除吗?"
+          @confirm="$emit('delete')"
+        >
+          <template #reference>
+            <el-button
+              type="primary"
+              text
+              style="padding-left: 0; padding-right: 0"
+            >
+              <el-icon style="font-size: 20px"><Close /></el-icon>
+            </el-button>
+          </template>
+          <template #actions="{ confirm, cancel }">
+            <el-button size="small" @click="cancel">No!</el-button>
+            <el-button type="danger" size="small" @click="confirm">
+              Yes?
+            </el-button>
+          </template>
+        </el-popconfirm>
+      </span>
     </div>
   </div>
 </template>

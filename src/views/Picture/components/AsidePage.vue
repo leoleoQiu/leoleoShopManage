@@ -159,7 +159,6 @@ defineExpose({
 <style lang="scss" scoped>
 .image-aside {
   position: relative;
-  border: 1px solid black;
   .image-top {
     background-color: rgb(244, 244, 245);
     position: absolute;

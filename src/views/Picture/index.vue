@@ -19,8 +19,10 @@ const UploadImg = () => {
 </script>
 <template>
   <el-container class="image-body" :style="{ height: h + 'px' }">
-    <el-header class="image-header">
-      <el-button @click="addPicture">新增列表</el-button>
+    <el-header class="image-header" style="border-bottom: 1px solid black">
+      <el-button @click="addPicture" style="margin-left: 15px"
+        >新增列表</el-button
+      >
       <el-button @click="UploadImg">上传图片</el-button>
     </el-header>
     <el-container class="image-main">
@@ -32,6 +34,8 @@ const UploadImg = () => {
 <style lang="scss" scoped>
 .image-body {
   background-color: rgb(244, 244, 245);
+  border: 2px solid black;
+  border-radius: 5px;
   .image-header {
     min-height: 100px;
     display: flex;
