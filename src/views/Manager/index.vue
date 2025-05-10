@@ -1,17 +1,24 @@
 <script setup>
-import { addNoticeAPI, deleteNoticeAPI, editNoticeAPI } from '@/api/notice'
-import { getManagerAPI, changeMangerStatusAPI } from '@/api/manager.js'
+import {
+  getManagerAPI,
+  changeMangerStatusAPI,
+  addManagerAPI,
+  deleteManagerAPI,
+  editManagerAPI
+} from '@/api/manager.js'
 import { ref } from 'vue'
 const ManagerList = ref([])
 const totalCount = ref(0)
 const loading = ref(false)
 const currentPage = ref(1)
 const drawerTitle = ref('新增')
+const rolesList = ref([])
 const getManagerList = async (page = 1, limit = 10, keyword = null) => {
   loading.value = true
   try {
     const res = await getManagerAPI(page, limit, keyword)
     console.log(res)
+    rolesList.value = res.data.roles
     ManagerList.value = res.data.list.map((o) => {
       o.statusLoding = false
       return o
@@ -30,27 +37,33 @@ const PageChange = (nowPage) => {
 //修改管理员状态
 const OnSwitch = async (status, scope) => {
   // const item = ManagerList.value.find((item) => item.id === scope.row.id)
-  scope.row.statusLoding = true
-  await changeMangerStatusAPI(scope.row.id, status)
-  scope.row.statusLoding = false
-  scope.row.status = status
+  try {
+    scope.row.statusLoding = true
+    await changeMangerStatusAPI(scope.row.id, status)
+    scope.row.status = status
+  } finally {
+    scope.row.statusLoding = false
+  }
 }
 //新增
 const drawerRef = ref(null)
 const formRef = ref(null)
 const formData = ref({
-  title: '',
-  content: ''
+  username: '',
+  password: '',
+  role_id: '',
+  status: 1,
+  avater: ''
 })
 const rules = {
-  title: [
+  username: [
     {
       required: true,
       message: '请输入信息',
       trigger: 'blur'
     }
   ],
-  content: [
+  password: [
     {
       required: true,
       message: '请输入信息',
@@ -58,10 +71,16 @@ const rules = {
     }
   ]
 }
-const addNotice = async () => {
+const addManager = async () => {
   drawerTitle.value = '新增'
   RowId.value = null
-  formData.value = { title: '', content: '' }
+  formData.value = {
+    username: '',
+    password: '',
+    role_id: '',
+    status: 1,
+    avater: ''
+  }
   drawerRef.value.open()
 }
 //编辑
@@ -74,10 +93,10 @@ const handleEdit = async (row) => {
   drawerRef.value.open()
 }
 //删除
-const deleteNotice = async (row) => {
+const deleteManager = async (row) => {
   try {
     loading.value = true
-    await deleteNoticeAPI(row.row.id)
+    await deleteManagerAPI(row.row.id)
     getManagerList(currentPage.value)
   } finally {
     loading.value = false
@@ -89,13 +108,16 @@ const submitForm = async () => {
   try {
     drawerRef.value.handleLoading()
     if (!RowId.value) {
-      await addNoticeAPI(formData.value)
+      //遍历对象提取非空value的属性
+      const newForm = {}
+      for (let key in formData.value) {
+        if (formData.value[key]) {
+          newForm[key] = formData.value[key]
+        }
+      }
+      await addManagerAPI(newForm)
     } else {
-      await editNoticeAPI(
-        RowId.value,
-        formData.value.title,
-        formData.value.content
-      )
+      await editManagerAPI(RowId.value, formData.value)
     }
     getManagerList(currentPage.value)
   } finally {
@@ -137,7 +159,7 @@ const OnSearch = () => {
         </el-row>
       </el-form>
       <div class="top">
-        <el-button type="primary" @click="addNotice">新增管理员</el-button>
+        <el-button type="primary" @click="addManager">新增管理员</el-button>
         <div
           class="icon"
           @click="getManagerList(currentPage)"
@@ -184,7 +206,7 @@ const OnSearch = () => {
                 width="220"
                 icon-color="#626AEF"
                 title="你确认要删除吗?"
-                @confirm="deleteNotice(scope)"
+                @confirm="deleteManager(scope)"
               >
                 <template #reference>
                   <el-button type="primary" text> 删除 </el-button>
@@ -210,17 +232,40 @@ const OnSearch = () => {
           @update:current-page="PageChange"
       /></template>
     </el-card>
+    <!-- 抽屉组件 -->
     <FormDrawer ref="drawerRef" @submit="submitForm" :title="drawerTitle">
-      <el-form ref="formRef" :model="formData" :rules="rules">
-        <el-form-item prop="title" label="公告标题">
-          <el-input v-model="formData.title"></el-input>
+      <el-form
+        ref="formRef"
+        :model="formData"
+        :rules="rules"
+        label-position="right"
+        label-width="auto"
+      >
+        <el-form-item prop="username" label="用户名">
+          <el-input v-model="formData.username"></el-input>
         </el-form-item>
-        <el-form-item prop="content" label="公告内容">
-          <el-input
-            type="textarea"
-            v-model="formData.content"
-            :rows="5"
-          ></el-input>
+        <el-form-item prop="password" label="密码">
+          <el-input v-model="formData.password"></el-input>
+        </el-form-item>
+        <el-form-item label="头像">
+          <el-input v-model="formData.avater"></el-input>
+        </el-form-item>
+        <el-form-item label="所属角色">
+          <el-select v-model="formData.role_id" placeholder="请输入用户角色">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-switch
+            v-model="formData.status"
+            :active-value="1"
+            :inactive-value="0"
+          />
         </el-form-item>
       </el-form>
     </FormDrawer>

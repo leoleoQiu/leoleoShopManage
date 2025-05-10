@@ -17,3 +17,26 @@ export const changeMangerStatusAPI = (id, status) => {
     }
   })
 }
+
+export const addManagerAPI = (data) => {
+  return request({
+    url: '/admin/manager',
+    method: 'post',
+    data
+  })
+}
+
+export const deleteManagerAPI = (id) => {
+  return request({
+    url: '/admin/manager/' + id + '/delete',
+    method: 'post'
+  })
+}
+
+export const editManagerAPI = (id, data) => {
+  return request({
+    url: '/admin/manager/' + id,
+    method: 'post',
+    data: data
+  })
+}
