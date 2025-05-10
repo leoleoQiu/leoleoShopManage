@@ -28,7 +28,7 @@ const handleSelect = (e) => {
     >
       <template v-for="(item, index) in asideList" :key="index">
         <el-sub-menu
-          :index="item.order"
+          :index="item.order.toString()"
           v-if="item.child && item.child.length > 0"
         >
           <template #title>

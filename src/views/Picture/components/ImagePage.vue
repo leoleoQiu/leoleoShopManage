@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import {
   getClassPictureAPI,
   EditClassPictureAPI,
@@ -18,7 +18,10 @@ const getImageData = async (id) => {
     currentId.value = id
     const res = await getClassPictureAPI(id, currentPage.value)
     console.log(res)
-    ImageList.value = res.data.list
+    ImageList.value = res.data.list.map((o) => {
+      o.checked = false
+      return o
+    })
     image_class_id.value = res.data.list[0].image_class_id
   } finally {
     Loading.value = false
@@ -55,7 +58,30 @@ const UploadSuccess = () => {
   getImageData(currentId.value)
   drawer.value = false
 }
+//多选框change
+const ImageChooseNum = computed(() =>
+  ImageList.value.filter((o) => o.checked === true)
+)
+const emit = defineEmits(['chooseImg'])
+const CheckedChange = (item) => {
+  if (ImageChooseNum.value.length > 1) {
+    item.checked = false
+    ImageList.value.find((o) => o.checked === true).checked = false
+    item.checked = true
+  }
+  if (ImageChooseNum.value.length === 0) {
+    emit('chooseImg')
+  } else {
+    emit('chooseImg', item.url)
+  }
+}
 defineExpose({ getImageData, UploadOpen })
+defineProps({
+  isChoose: {
+    type: Boolean,
+    default: false
+  }
+})
 </script>
 <template>
   <el-main class="image-content" v-loading="Loading">
@@ -78,6 +104,11 @@ defineExpose({ getImageData, UploadOpen })
                 "
                 class="button-item"
               >
+                <el-checkbox
+                  v-if="isChoose"
+                  v-model="item.checked"
+                  @change="CheckedChange(item)"
+                ></el-checkbox>
                 <el-button
                   type="primary"
                   text

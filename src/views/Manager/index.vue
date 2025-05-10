@@ -7,6 +7,7 @@ import {
   editManagerAPI
 } from '@/api/manager.js'
 import { ref } from 'vue'
+import ImageChoose from './components/ImageChoose.vue'
 const ManagerList = ref([])
 const totalCount = ref(0)
 const loading = ref(false)
@@ -53,7 +54,7 @@ const formData = ref({
   password: '',
   role_id: '',
   status: 1,
-  avater: ''
+  avatar: ''
 })
 const rules = {
   username: [
@@ -79,7 +80,7 @@ const addManager = async () => {
     password: '',
     role_id: '',
     status: 1,
-    avater: ''
+    avatar: ''
   }
   drawerRef.value.open()
 }
@@ -88,8 +89,13 @@ const RowId = ref(null)
 const handleEdit = async (row) => {
   drawerTitle.value = '编辑'
   RowId.value = row.row.id
-  formData.value.title = row.row.title
-  formData.value.content = row.row.content
+  for (let key in formData.value) {
+    if (key === 'role_id') {
+      formData.value[key] = row.row.role.id
+    } else {
+      formData.value[key] = row.row[key]
+    }
+  }
   drawerRef.value.open()
 }
 //删除
@@ -173,7 +179,12 @@ const OnSearch = () => {
           <template #default="scope">
             <div class="demo-type">
               <div style="display: flex">
-                <el-avatar :icon="UserFilled" />
+                <el-avatar
+                  :src="
+                    scope.row.avatar ||
+                    'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+                  "
+                />
                 <div style="margin-left: 10px">
                   <p>{{ scope.row.username }}</p>
                   <span>ID：{{ scope.row.role.id }}</span>
@@ -248,7 +259,7 @@ const OnSearch = () => {
           <el-input v-model="formData.password"></el-input>
         </el-form-item>
         <el-form-item label="头像">
-          <el-input v-model="formData.avater"></el-input>
+          <ImageChoose v-model="formData.avatar"></ImageChoose>
         </el-form-item>
         <el-form-item label="所属角色">
           <el-select v-model="formData.role_id" placeholder="请输入用户角色">

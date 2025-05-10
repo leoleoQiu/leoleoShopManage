@@ -20,8 +20,8 @@ const props = defineProps({
     default: '45%'
   },
   destroyOnClose: {
-    type: String,
-    default: 'false'
+    type: Boolean,
+    default: false
   }
 })
 
@@ -45,7 +45,7 @@ defineExpose({
     v-model="drawer"
     :title="props.title"
     :size="props.size"
-    :destroy-on-close="props.destroyOnClose"
+    :destroyOnClose="props.destroyOnClose"
   >
     <div class="form-drawer">
       <div class="body"><slot></slot></div>
