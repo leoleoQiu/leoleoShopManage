@@ -101,14 +101,11 @@ const submitForm = async () => {
   <el-container class="notice">
     <el-card shadow="hover" class="notice-card" v-loading="loading">
       <div class="top">
-        <el-button type="primary" @click="addNotice">新增公告</el-button>
-        <div
-          class="icon"
-          @click="getNoticeList(currentPage)"
-          style="cursor: pointer"
-        >
-          <el-icon><Refresh /></el-icon>
-        </div>
+        <PageHeader
+          buttonTitle="新增公告"
+          @create="addNotice"
+          @refresh="getNoticeList(currentPage)"
+        ></PageHeader>
       </div>
       <el-table :data="NoticeList" stripe style="width: 100%">
         <el-table-column prop="content" label="公告内容" width="180" />

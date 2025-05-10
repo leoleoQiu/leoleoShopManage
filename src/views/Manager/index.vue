@@ -9,11 +9,11 @@ import {
 import { ref } from 'vue'
 import ImageChoose from './components/ImageChoose.vue'
 const ManagerList = ref([])
+const rolesList = ref([])
 const totalCount = ref(0)
 const loading = ref(false)
 const currentPage = ref(1)
 const drawerTitle = ref('新增')
-const rolesList = ref([])
 const getManagerList = async (page = 1, limit = 10, keyword = null) => {
   loading.value = true
   try {
@@ -165,14 +165,11 @@ const OnSearch = () => {
         </el-row>
       </el-form>
       <div class="top">
-        <el-button type="primary" @click="addManager">新增管理员</el-button>
-        <div
-          class="icon"
-          @click="getManagerList(currentPage)"
-          style="cursor: pointer"
-        >
-          <el-icon><Refresh /></el-icon>
-        </div>
+        <PageHeader
+          buttonTitle="新增管理员"
+          @create="addManager"
+          @refresh="getManagerList(currentPage)"
+        ></PageHeader>
       </div>
       <el-table :data="ManagerList" stripe style="width: 100%">
         <el-table-column label="管理员" width="250">
