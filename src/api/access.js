@@ -20,3 +20,18 @@ export const editRuleListAPI = (id, data) => {
     data
   })
 }
+
+export const deleteRuleListAPI = (id) => {
+  return request({
+    url: '/admin/rule/' + id + '/delete',
+    method: 'post'
+  })
+}
+
+export const changeRuleStatusAPI = (id, status) => {
+  return request({
+    url: '/admin/rule/' + id + '/update_status',
+    method: 'post',
+    data: { status }
+  })
+}

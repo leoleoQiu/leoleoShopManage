@@ -1,8 +1,11 @@
 <script setup>
+import IconSelect from './components/IconSelect.vue'
 import {
   getRuleListAPI,
   addRuleListAPI,
-  editRuleListAPI
+  editRuleListAPI,
+  deleteRuleListAPI,
+  changeRuleStatusAPI
 } from '@/api/access.js'
 import { ref } from 'vue'
 const formData = ref({
@@ -51,8 +54,14 @@ const currentID = ref(0)
 //新增
 const addRule = () => {
   currentID.value = null
-  formData.value = defaultForm
+  //不能直接赋值，不然的话会是直接将地址赋给formData
+  formData.value = { ...defaultForm }
   drawerRef.value.open()
+}
+//新增子目录
+const addChildRule = (data) => {
+  addRule()
+  formData.value.rule_id = data.id
 }
 //编辑
 const editRule = (data) => {
@@ -61,6 +70,21 @@ const editRule = (data) => {
     formData.value[k] = data[k]
   }
   drawerRef.value.open()
+}
+//删除
+const deleteRule = async (data) => {
+  await deleteRuleListAPI(data.id)
+}
+//修改状态
+const loadingStatus = ref(false)
+const StatusChange = async (status, data) => {
+  loadingStatus.value = true
+  try {
+    await changeRuleStatusAPI(data.id, status)
+    formData.value.status = status === 0 ? 0 : 1
+  } finally {
+    loadingStatus.value = false
+  }
 }
 //提交表单
 const submitForm = async () => {
@@ -106,17 +130,23 @@ const submitForm = async () => {
             </el-icon>
             <span>{{ data.name }}</span>
           </div>
-          <div class="right">
+          <div class="right" @click.stop="() => {}">
             <el-switch
+              v-loading="loadingStatus"
               :modelValue="data.status"
               :activeValue="1"
               :inactiveValue="0"
+              @change="StatusChange($event, data)"
             ></el-switch>
             <el-button type="primary" text @click.stop="editRule(data)"
               >修改</el-button
             >
-            <el-button type="primary" text>增加</el-button>
-            <el-button type="primary" text>删除</el-button>
+            <el-button type="primary" text @click.stop="addChildRule(data)"
+              >增加</el-button
+            >
+            <el-button type="primary" text @click.stop="deleteRule(data)"
+              >删除</el-button
+            >
           </div>
         </div>
       </template>
@@ -148,7 +178,7 @@ const submitForm = async () => {
           <el-input v-model="formData.name" style="width: 30%"></el-input>
         </el-form-item>
         <el-form-item label="菜单图标" v-if="formData.menu === 1">
-          <el-input v-model="formData.icon"></el-input>
+          <IconSelect v-model="formData.icon"></IconSelect>
         </el-form-item>
         <el-form-item
           label="前端路由"
