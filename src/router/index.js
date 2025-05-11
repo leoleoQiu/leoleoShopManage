@@ -83,6 +83,12 @@ const asyncRoutes = [
     name: 'access/list',
     component: () => import('@/views/access/index.vue'),
     meta: { title: '权限管理' }
+  },
+  {
+    path: '/role/list',
+    name: 'role/list',
+    component: () => import('@/views/Role/index.vue'),
+    meta: { title: '角色管理' }
   }
 ]
 
