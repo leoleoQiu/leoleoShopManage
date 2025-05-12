@@ -4,9 +4,10 @@ import {
   addRoleAPI,
   deleteRoleAPI,
   editRoleAPI,
-  changeRoleStatusAPI
+  changeRoleStatusAPI,
+  SetRoleRuleAPI
 } from '@/api/role.js'
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 const RoleList = ref([])
 const totalCount = ref(0)
 const loading = ref(false)
@@ -16,7 +17,7 @@ const getRoleList = async (page = 1) => {
   loading.value = true
   try {
     const res = await getRoleListAPI(page)
-    console.log(res)
+    // console.log(res)
     RoleList.value = res.data.list
     totalCount.value = res.data.totalCount
   } finally {
@@ -107,6 +108,55 @@ const submitForm = async () => {
     drawerRef.value.close()
   }
 }
+
+//权限设置
+import { getRuleListAPI } from '@/api/access.js'
+const drawerRuleRef = ref(null)
+const RuleList = ref([])
+const treeHeight = window.innerHeight - 180
+const defaultExpandedKeys = ref([])
+const ruleIds = ref([])
+const treeRef = ref(null)
+const checkStrictly = ref(false)
+//打开权限抽屉
+const handleSetRule = async (scope) => {
+  //设置父子节点不关联
+  checkStrictly.value = true
+  //记录当前选中的ID
+  RowId.value = scope.row.id
+  //方法一：否则第二次RuleList有数据，el-tree会直接渲染
+  // RuleList.value = []
+  const res = await getRuleListAPI()
+  RuleList.value = res.data.list
+  //设置展开的KEY数组
+  defaultExpandedKeys.value = RuleList.value.map((o) => o.id)
+  drawerRuleRef.value.open()
+  ruleIds.value = scope.row.rules.map((o) => o.id)
+  //等待dom渲染完成
+  await nextTick()
+  treeRef.value.setCheckedKeys(ruleIds.value)
+  //方法二：设置settimeout，setCheckedKeys这个方法组件内部做了处理，是异步，再原先有数据的话，会立刻执行checkStrictly.value = false
+  setTimeout(() => {
+    checkStrictly.value = false
+  }, 100)
+}
+//复选框改变
+const treeCheck = (...object) => {
+  const { checkedKeys, halfCheckedKeys } = object[1]
+  ruleIds.value = [...checkedKeys, ...halfCheckedKeys]
+}
+//提交表单
+const submitRuleForm = async () => {
+  drawerRuleRef.value.handleLoading()
+  try {
+    await SetRoleRuleAPI(RowId.value, ruleIds.value)
+    ElMessage.success('成功修改')
+    getRoleList(currentPage.value)
+  } finally {
+    drawerRuleRef.value.close()
+    drawerRuleRef.value.handleLoadingClose()
+  }
+}
 </script>
 <template>
   <el-container class="Role">
@@ -135,6 +185,9 @@ const submitForm = async () => {
 
         <el-table-column label="操作" align="center">
           <template #default="scope">
+            <el-button text type="primary" @click="handleSetRule(scope)">
+              配置权限
+            </el-button>
             <el-button text type="primary" @click="handleEdit(scope)">
               修改
             </el-button>
@@ -192,6 +245,38 @@ const submitForm = async () => {
           ></el-switch>
         </el-form-item>
       </el-form>
+    </FormDrawer>
+    <!-- 配置权限 -->
+    <FormDrawer
+      ref="drawerRuleRef"
+      @submit="submitRuleForm"
+      title="配置权限"
+      size="30%"
+    >
+      <el-tree-v2
+        node-key="id"
+        ref="treeRef"
+        style="max-width: 600px"
+        :data="RuleList"
+        :props="{ label: 'name', children: 'child' }"
+        show-checkbox
+        :height="treeHeight"
+        :default-expanded-keys="defaultExpandedKeys"
+        @check="treeCheck"
+        :check-strictly="checkStrictly"
+      >
+        <template #default="{ data }">
+          <el-tag
+            :type="data.menu ? 'primary' : 'info'"
+            style="margin-right: 4px"
+          >
+            {{ data.menu ? '菜单' : '权限' }}
+          </el-tag>
+          <div>
+            {{ data.name }}
+          </div>
+        </template>
+      </el-tree-v2>
     </FormDrawer>
   </el-container>
 </template>

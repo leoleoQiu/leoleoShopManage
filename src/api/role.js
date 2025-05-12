@@ -48,7 +48,7 @@ export const SetRoleRuleAPI = (id, ruleIds) => {
     method: 'post',
     data: {
       id,
-      ruleIds
+      rule_ids: ruleIds
     }
   })
 }
