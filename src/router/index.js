@@ -89,6 +89,12 @@ const asyncRoutes = [
     name: 'role/list',
     component: () => import('@/views/Role/index.vue'),
     meta: { title: '角色管理' }
+  },
+  {
+    path: '/skus/list',
+    name: 'skus/list',
+    component: () => import('@/views/Skus/index.vue'),
+    meta: { title: '商品管理' }
   }
 ]
 
