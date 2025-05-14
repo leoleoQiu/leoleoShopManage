@@ -145,25 +145,17 @@ const OnSearch = () => {
 <template>
   <el-container class="notice">
     <el-card shadow="hover" class="notice-card" v-loading="loading">
-      <el-form :model="searchForm">
-        <el-row>
-          <el-col :span="10">
-            <el-form-item label="搜索">
-              <el-input
-                v-model="searchForm.keyword"
-                placeholder="管理员名称"
-                clearable
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" :offset="6">
-            <div style="display: flex; justify-content: flex-end">
-              <el-button type="primary" @click="OnSearch">搜索</el-button>
-              <el-button @click="resetSearchWord">重置</el-button>
-            </div>
-          </el-col>
-        </el-row>
-      </el-form>
+      <search-header @OnSearch="OnSearch" @resetSearchWord="resetSearchWord">
+        <el-col :span="8">
+          <el-form-item label="搜索">
+            <el-input
+              v-model="searchForm.keyword"
+              placeholder="管理员名称"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </search-header>
       <div class="top">
         <PageHeader
           buttonTitle="新增管理员"
