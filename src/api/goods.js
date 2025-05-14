@@ -5,11 +5,12 @@ export const getGoodsAPI = (page, data) => {
     params: data
   })
 }
-export const changeMangerStatusAPI = (id, status) => {
+export const changeGoodsStatusAPI = (ids, status) => {
   return request({
-    url: '/admin/manager/' + id + '/update_status',
+    url: '/admin/goods/changestatus',
     method: 'post',
     data: {
+      ids,
       status
     }
   })

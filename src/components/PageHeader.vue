@@ -8,6 +8,7 @@ const props = defineProps({
   }
 })
 const pageShow = computed(() => props.layout.split(','))
+defineEmits(['deleteMap', 'create', 'refresh'])
 </script>
 <template>
   <div>
@@ -35,6 +36,7 @@ const pageShow = computed(() => props.layout.split(','))
         </el-button>
       </template>
     </el-popconfirm>
+    <slot></slot>
   </div>
   <div
     class="icon"
