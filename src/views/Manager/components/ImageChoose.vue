@@ -1,7 +1,9 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 const DialogVisible = ref(false)
-const Open = () => {
+const callBackFun = ref(null)
+const Open = (callBack = null) => {
+  callBackFun.value = callBack
   DialogVisible.value = true
 }
 //Picture中的函数
@@ -26,19 +28,26 @@ const props = defineProps({
   limit: {
     type: Number,
     default: 1
+  },
+  preview: {
+    type: Boolean,
+    default: true
   }
 })
 const avaterChoose = (url) => {
   ImgUrl = url
 }
-
 //处理头像选择
 const handleConfirm = async () => {
   if (ImgUrl) {
     if (props.limit === 1) {
-      modelValue.value = ImgUrl
+      //是否是富文本
+      if (!props.preview && typeof callBackFun.value === 'function') {
+        callBackFun.value(ImgUrl)
+      } else {
+        modelValue.value = ImgUrl
+      }
     } else {
-      console.log(ImgUrl)
       const nowValue = [...modelValue.value]
       for (let k of ImgUrl) {
         if (!nowValue.includes(k.url)) {
@@ -50,10 +59,10 @@ const handleConfirm = async () => {
           `最多还可以选择${props.limit - modelValue.value.length}张`
         )
       }
-      console.log('now', nowValue)
+      // console.log('now', nowValue)
       modelValue.value = [...nowValue]
       await nextTick()
-      console.log(modelValue.value)
+      // console.log(modelValue.value)
     }
     DialogVisible.value = false
   } else {
@@ -67,9 +76,13 @@ const handleConfirm = async () => {
 const removeBanner = (url) => {
   modelValue.value = modelValue.value.filter((o) => o !== url)
 }
+
+defineExpose({
+  Open
+})
 </script>
 <template>
-  <div style="display: flex; flex-wrap: wrap">
+  <div v-if="preview" style="display: flex; flex-wrap: wrap">
     <div v-if="modelValue" style="display: flex; flex-wrap: wrap">
       <img
         v-if="typeof modelValue === 'string'"

@@ -1,7 +1,9 @@
 <template>
   <editor v-model="content" tag-name="div" :init="init" />
+  <Imagechoose ref="imageChoose" :preview="false"></Imagechoose>
 </template>
 <script setup>
+import Imagechoose from '@/views/Manager/components/ImageChoose.vue'
 import tinymce from 'tinymce/tinymce'
 import Editor from '@tinymce/tinymce-vue'
 import { ref, watch } from 'vue'
@@ -43,6 +45,7 @@ const props = defineProps({
   modelValue: String
 })
 const emit = defineEmits(['update:modelValue'])
+const imageChoose = ref(null)
 // 配置
 const init = {
   language: 'zh_CN',
@@ -57,7 +60,7 @@ const init = {
   toolbar_mode: 'none',
   plugins: 'advlist lists link image table code',
   toolbar:
-    'formats undo redo fontsizeselect fontselect ltr rtl searchreplace media|outdent indent aligncenter alignleft alignright alignjustify lineheight underline quicklink h2 h3 blockquote numlist bullist table removeformat forecolor backcolor bold italic strikethrough hr link preview fullscreen ',
+    'formats undo redo fontsizeselect fontselect ltr rtl searchreplace media imageUpload |outdent indent aligncenter alignleft alignright alignjustify lineheight underline quicklink h2 h3 blockquote numlist bullist table removeformat forecolor backcolor bold italic strikethrough hr link preview fullscreen ',
   content_style: 'p {margin: 5px 0; font-size: 14px}',
   fontsize_formats: '12px 14px 16px 18px 24px 36px 48px 56px 72px',
   font_formats:
@@ -70,7 +73,18 @@ const init = {
   base_url: '/tinymce', // 添加基础URL配置
   relative_urls: false, // 添加此配置，使用绝对路径
   remove_script_host: false, // 添加此配置，保留完整URL
-  document_base_url: '/' // 添加此配置，指定基础URL
+  document_base_url: '/', // 添加此配置，指定基础URL
+  setup: (editor) => {
+    editor.ui.registry.addButton('imageUpload', {
+      tooltip: '插入图片',
+      icon: 'image',
+      onAction() {
+        imageChoose.value.Open((data) => {
+          editor.insertContent(`<img src="${data}" style="width:100%" /> `)
+        })
+      }
+    })
+  }
 }
 tinymce.init // 初始化
 const content = ref(props.modelValue)
