@@ -22,7 +22,7 @@ const getImageData = async (id) => {
       o.checked = false
       return o
     })
-    image_class_id.value = res.data.list[0].image_class_id
+    image_class_id.value = res.data?.list?.[0]?.image_class_id
   } finally {
     Loading.value = false
   }
@@ -58,30 +58,39 @@ const UploadSuccess = () => {
   getImageData(currentId.value)
   drawer.value = false
 }
+
+const props = defineProps({
+  isChoose: {
+    type: Boolean,
+    default: false
+  },
+  limit: {
+    type: Number,
+    default: 1
+  }
+})
 //多选框change
 const ImageChooseNum = computed(() =>
   ImageList.value.filter((o) => o.checked === true)
 )
 const emit = defineEmits(['chooseImg'])
 const CheckedChange = (item) => {
-  if (ImageChooseNum.value.length > 1) {
-    item.checked = false
-    ImageList.value.find((o) => o.checked === true).checked = false
-    item.checked = true
-  }
-  if (ImageChooseNum.value.length === 0) {
-    emit('chooseImg')
+  if (props.limit === 1) {
+    if (ImageChooseNum.value.length > 1) {
+      item.checked = false
+      ImageList.value.find((o) => o.checked === true).checked = false
+      item.checked = true
+    }
+    if (ImageChooseNum.value.length === 0) {
+      emit('chooseImg')
+    } else {
+      emit('chooseImg', item.url)
+    }
   } else {
-    emit('chooseImg', item.url)
+    emit('chooseImg', ImageChooseNum.value)
   }
 }
 defineExpose({ getImageData, UploadOpen })
-defineProps({
-  isChoose: {
-    type: Boolean,
-    default: false
-  }
-})
 </script>
 <template>
   <el-main class="image-content" v-loading="Loading">

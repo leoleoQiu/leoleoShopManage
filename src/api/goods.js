@@ -41,3 +41,19 @@ export const editGoodsAPI = (id, data) => {
     data: data
   })
 }
+//轮播图
+export const readBannerAPI = (id) => {
+  return request({
+    url: '/admin/goods/read/' + id
+  })
+}
+
+export const setBannerAPI = (id, banners) => {
+  return request({
+    url: '/admin/goods/banners/' + id,
+    method: 'post',
+    data: {
+      banners
+    }
+  })
+}

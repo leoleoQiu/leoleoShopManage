@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 const DialogVisible = ref(false)
 const Open = () => {
   DialogVisible.value = true
@@ -22,13 +22,39 @@ const UploadImg = () => {
 //
 const modelValue = defineModel()
 let ImgUrl = ''
+const props = defineProps({
+  limit: {
+    type: Number,
+    default: 1
+  }
+})
 const avaterChoose = (url) => {
   ImgUrl = url
 }
+
 //处理头像选择
-const handleConfirm = () => {
+const handleConfirm = async () => {
   if (ImgUrl) {
-    modelValue.value = ImgUrl
+    if (props.limit === 1) {
+      modelValue.value = ImgUrl
+    } else {
+      console.log(ImgUrl)
+      const nowValue = [...modelValue.value]
+      for (let k of ImgUrl) {
+        if (!nowValue.includes(k.url)) {
+          nowValue.push(k.url)
+        }
+      }
+      if (nowValue.length > props.limit) {
+        return ElMessage.success(
+          `最多还可以选择${props.limit - modelValue.value.length}张`
+        )
+      }
+      console.log('now', nowValue)
+      modelValue.value = [...nowValue]
+      await nextTick()
+      console.log(modelValue.value)
+    }
     DialogVisible.value = false
   } else {
     ElMessage({
@@ -37,19 +63,50 @@ const handleConfirm = () => {
     })
   }
 }
+//移除轮播图
+const removeBanner = (url) => {
+  modelValue.value = modelValue.value.filter((o) => o !== url)
+}
 </script>
 <template>
-  <div v-if="modelValue">
-    <img
-      :src="modelValue"
-      alt=""
-      class="avater-choose"
-      style="object-fit: cover; margin-right: 5px"
-    />
+  <div style="display: flex; flex-wrap: wrap">
+    <div v-if="modelValue" style="display: flex; flex-wrap: wrap">
+      <img
+        v-if="typeof modelValue === 'string'"
+        :src="modelValue"
+        alt=""
+        class="avater-choose"
+        style="object-fit: cover; margin-right: 5px"
+      />
+      <template v-else>
+        <div
+          v-for="item in modelValue"
+          :key="item"
+          style="margin-bottom: 5px; position: relative"
+        >
+          <img
+            :src="item"
+            alt=""
+            class="avater-choose image-body"
+            style="object-fit: cover; margin-right: 5px; cursor: auto"
+          />
+          <div
+            style="position: absolute; right: 3px; top: 0px; cursor: pointer"
+            @click="removeBanner(item)"
+          >
+            <el-icon size="20"><CircleClose /></el-icon>
+          </div>
+        </div>
+      </template>
+      <div class="avater-choose" @click="Open">
+        <el-icon size="25"><Plus /></el-icon>
+      </div>
+    </div>
+    <div v-else class="avater-choose" @click="Open">
+      <el-icon size="25"><Plus /></el-icon>
+    </div>
   </div>
-  <div class="avater-choose" @click="Open">
-    <el-icon size="25"><Plus /></el-icon>
-  </div>
+
   <el-dialog
     v-model="DialogVisible"
     title="选择头像"
@@ -70,6 +127,7 @@ const handleConfirm = () => {
           ref="ImageModuleRef"
           @chooseImg="avaterChoose"
           isChoose
+          :limit="props.limit"
         ></ImagePage>
       </el-container>
     </el-container>

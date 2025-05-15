@@ -9,6 +9,8 @@ import {
 import { getCategoryAPI } from '@/api/category.js'
 import { ref } from 'vue'
 import ImageChoose from '@/views/Manager/components/ImageChoose.vue'
+import BannerModule from './components/BannerModule.vue'
+import ContentModule from './components/ContentModule.vue'
 const GoodsList = ref([])
 const rolesList = ref([])
 const totalCount = ref(0)
@@ -194,6 +196,16 @@ const changeGoodsStatus = async (status) => {
     loading.value = false
   }
 }
+//轮播图抽屉组件
+const bannerDrawer = ref(null)
+const handleSetBanner = (scope) => {
+  bannerDrawer.value.open(scope.row)
+}
+//富文本编辑器抽屉组件
+const contentDrawer = ref(null)
+const handleSetEditor = (scope) => {
+  contentDrawer.value.open(scope.row)
+}
 </script>
 <template>
   <el-tabs v-model="searchForm.tab" @tab-change="OnSearch">
@@ -340,8 +352,12 @@ const changeGoodsStatus = async (status) => {
                 修改
               </el-button>
               <el-button text type="primary">商品规格</el-button>
-              <el-button text type="primary">设置轮播图</el-button>
-              <el-button text type="primary">商品详情</el-button>
+              <el-button text type="primary" @click="handleSetBanner(scope)"
+                >设置轮播图</el-button
+              >
+              <el-button text type="primary" @click="handleSetEditor(scope)"
+                >商品详情</el-button
+              >
               <el-popconfirm
                 width="220"
                 icon-color="#626AEF"
@@ -444,6 +460,8 @@ const changeGoodsStatus = async (status) => {
         </el-form-item>
       </el-form>
     </FormDrawer>
+    <BannerModule ref="bannerDrawer"></BannerModule>
+    <ContentModule ref="contentDrawer"></ContentModule>
   </el-container>
 </template>
 <style lang="scss" scoped>

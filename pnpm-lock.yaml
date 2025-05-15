@@ -11,6 +11,9 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.1(vue@3.5.13)
+      '@tinymce/tinymce-vue':
+        specifier: ^6.1.0
+        version: 6.1.0(tinymce@7.9.0)(vue@3.5.13)
       '@vueuse/core':
         specifier: ^13.1.0
         version: 13.1.0(vue@3.5.13)
@@ -35,6 +38,9 @@ importers:
       pinia:
         specifier: ^3.0.1
         version: 3.0.2(vue@3.5.13)
+      tinymce:
+        specifier: ^7.9.0
+        version: 7.9.0
       vue:
         specifier: ^3.5.13
         version: 3.5.13
@@ -700,6 +706,15 @@ packages:
 
   '@sxzz/popperjs-es@2.11.7':
     resolution: {integrity: sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==}
+
+  '@tinymce/tinymce-vue@6.1.0':
+    resolution: {integrity: sha512-7JdaKMOaohuFWpjKwRmaZJbT/eNVUUYHG93R7+lUf7SUN+hSqd2spbuqZcki+tG9kaSAGd2ZmvJIsmzWDNAzpw==}
+    peerDependencies:
+      tinymce: ^7.0.0 || ^6.0.0 || ^5.5.1
+      vue: ^3.0.0
+    peerDependenciesMeta:
+      tinymce:
+        optional: true
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
@@ -1906,6 +1921,9 @@ packages:
     resolution: {integrity: sha512-mEwzpUgrLySlveBwEVDMKk5B57bhLPYovRfPAXD5gA/98Opn0rCDj3GtLwFvCvH5RK9uPCExUROW5NjDwvqkxw==}
     engines: {node: '>=12.0.0'}
 
+  tinymce@7.9.0:
+    resolution: {integrity: sha512-tTrUmUGWqy1BY1WwDYh4WiuHm23LiRTcE1Xq3WLO8HKFzde/d0bTF/hXWOa97zqGh0ndJHx/nysQaNC9Gcd16g==}
+
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
@@ -2659,6 +2677,12 @@ snapshots:
   '@sindresorhus/merge-streams@4.0.0': {}
 
   '@sxzz/popperjs-es@2.11.7': {}
+
+  '@tinymce/tinymce-vue@6.1.0(tinymce@7.9.0)(vue@3.5.13)':
+    dependencies:
+      vue: 3.5.13
+    optionalDependencies:
+      tinymce: 7.9.0
 
   '@types/estree@1.0.7': {}
 
@@ -3898,6 +3922,8 @@ snapshots:
     dependencies:
       fdir: 6.4.4(picomatch@4.0.2)
       picomatch: 4.0.2
+
+  tinymce@7.9.0: {}
 
   to-regex-range@5.0.1:
     dependencies:
