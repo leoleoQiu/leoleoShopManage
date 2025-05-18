@@ -57,3 +57,43 @@ export const setBannerAPI = (id, banners) => {
     }
   })
 }
+
+//商品规格
+export const updateSkusGoodsAPI = (id, data) => {
+  return request({
+    url: '/admin/goods/updateskus/' + id,
+    method: 'POST',
+    data: data
+  })
+}
+
+export const addSkusGoodsAPI = (data) => {
+  return request({
+    url: '/admin/goods_skus_card',
+    method: 'post',
+    data: data
+  })
+}
+
+export const exitSkusGoodsAPI = (id, data) => {
+  return request({
+    url: '/admin/goods_skus_card/' + id,
+    method: 'post',
+    data: data
+  })
+}
+
+export const deleteSkusGoodsAPI = (id) => {
+  return request({
+    url: '/admin/goods_skus_card/' + id + '/delete',
+    method: 'post'
+  })
+}
+
+export const sortSkusGoodsAPI = (data) => {
+  return request({
+    url: '/admin/goods_skus_card/sort',
+    method: 'post',
+    data
+  })
+}

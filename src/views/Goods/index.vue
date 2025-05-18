@@ -11,6 +11,7 @@ import { ref } from 'vue'
 import ImageChoose from '@/views/Manager/components/ImageChoose.vue'
 import BannerModule from './components/BannerModule.vue'
 import ContentModule from './components/ContentModule.vue'
+import SkusModule from './components/SkusModule.vue'
 const GoodsList = ref([])
 const rolesList = ref([])
 const totalCount = ref(0)
@@ -206,6 +207,11 @@ const contentDrawer = ref(null)
 const handleSetEditor = (scope) => {
   contentDrawer.value.open(scope.row)
 }
+//商品规格修改
+const skusDrawer = ref(null)
+const handleSkus = (scope) => {
+  skusDrawer.value.open(scope.row)
+}
 </script>
 <template>
   <el-tabs v-model="searchForm.tab" @tab-change="OnSearch">
@@ -351,7 +357,9 @@ const handleSetEditor = (scope) => {
               <el-button text type="primary" @click="handleEdit(scope)">
                 修改
               </el-button>
-              <el-button text type="primary">商品规格</el-button>
+              <el-button text type="primary" @click="handleSkus(scope)"
+                >商品规格</el-button
+              >
               <el-button text type="primary" @click="handleSetBanner(scope)"
                 >设置轮播图</el-button
               >
@@ -462,6 +470,7 @@ const handleSetEditor = (scope) => {
     </FormDrawer>
     <BannerModule ref="bannerDrawer"></BannerModule>
     <ContentModule ref="contentDrawer"></ContentModule>
+    <SkusModule ref="skusDrawer"></SkusModule>
   </el-container>
 </template>
 <style lang="scss" scoped>

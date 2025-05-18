@@ -45,7 +45,7 @@ defineExpose({
     v-model="drawer"
     :title="props.title"
     :size="props.size"
-    :destroyOnClose="props.destroyOnClose"
+    :destroy-on-close="props.destroyOnClose"
   >
     <div class="form-drawer">
       <div class="body"><slot></slot></div>
