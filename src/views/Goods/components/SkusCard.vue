@@ -1,12 +1,24 @@
 <script setup>
+import { ref } from 'vue'
 import SkusCardItem from './SkusCardItem.vue'
 import {
   skusCardList,
   addSkusCard,
   exitSkusGoods,
   deleteSkusGoods,
-  sortSkusGoods
+  sortSkusGoods,
+  addItemValue,
+  updateItemValue,
+  deleteItemValue,
+  submitChoose
 } from '@/composables/SkusCard.js'
+import SkusChoose from './SkusChoose.vue'
+const skusChooseRef = ref(null)
+const currentItemID = ref(0)
+const skusChoose = (item) => {
+  currentItemID.value = item.id
+  skusChooseRef.value.open()
+}
 </script>
 <template>
   <el-form-item label="规则选项">
@@ -31,7 +43,9 @@ import {
             @change="exitSkusGoods(item)"
           >
             <template #append>
-              <el-icon><more /></el-icon>
+              <el-icon @click="skusChoose(item)" style="cursor: pointer">
+                <more />
+              </el-icon>
             </template>
           </el-input>
           <div class="icon" style="display: flex; align-items: center">
@@ -56,9 +70,16 @@ import {
       <SkusCardItem
         :skusCardItemId="item.id"
         :skusCardItemValue="item.goodsSkusCardValue"
+        @addItemValue="(e) => addItemValue(e, item)"
+        @updateItemValue="updateItemValue"
+        @deleteItemValue="(e) => deleteItemValue(e, item)"
       ></SkusCardItem>
     </el-card>
   </el-form-item>
   <el-button type="success" @click="addSkusCard">添加选项</el-button>
+  <SkusChoose
+    ref="skusChooseRef"
+    @submitChoose="(e) => submitChoose(currentItemID, e)"
+  ></SkusChoose>
 </template>
 <style lang="scss" scoped></style>

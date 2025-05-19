@@ -94,6 +94,39 @@ export const sortSkusGoodsAPI = (data) => {
   return request({
     url: '/admin/goods_skus_card/sort',
     method: 'post',
+    data: {
+      sortdata: data
+    }
+  })
+}
+
+export const addSkusGoodsItemAPI = (data) => {
+  return request({
+    url: '/admin/goods_skus_card_value',
+    method: 'post',
+    data
+  })
+}
+
+export const updateSkusGoodsItemAPI = (id, data) => {
+  return request({
+    url: '/admin/goods_skus_card_value/' + id,
+    method: 'post',
+    data
+  })
+}
+
+export const deleteSkusGoodsItemAPI = (id) => {
+  return request({
+    url: '/admin/goods_skus_card_value/' + id + '/delete',
+    method: 'post'
+  })
+}
+
+export const chooseAndSetSkusGoodsAPI = (id, data) => {
+  return request({
+    url: '/admin/goods_skus_card/' + id + '/set',
+    method: 'post',
     data
   })
 }
