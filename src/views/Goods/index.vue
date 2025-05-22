@@ -228,15 +228,16 @@ const handleSkus = (scope) => {
 }
 </script>
 <template>
-  <el-tabs v-model="searchForm.tab" @tab-change="OnSearch">
-    <el-tab-pane
-      v-for="item in tabList"
-      :key="item.name"
-      :label="item.label"
-      :name="item.name"
-    ></el-tab-pane>
-  </el-tabs>
   <el-container class="goods" v-loading="loading">
+    <el-header>
+      <el-tabs v-model="searchForm.tab" @tab-change="OnSearch">
+        <el-tab-pane
+          v-for="item in tabList"
+          :key="item.name"
+          :label="item.label"
+          :name="item.name"
+        ></el-tab-pane> </el-tabs
+    ></el-header>
     <el-card shadow="hover" class="goods-card">
       <search-header
         :model="searchForm"

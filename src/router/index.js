@@ -95,6 +95,12 @@ const asyncRoutes = [
     name: 'skus/list',
     component: () => import('@/views/Skus/index.vue'),
     meta: { title: '商品管理' }
+  },
+  {
+    path: '/category/list',
+    name: 'category/list',
+    component: () => import('@/views/Category/index.vue'),
+    meta: { title: '商品分类' }
   }
 ]
 
