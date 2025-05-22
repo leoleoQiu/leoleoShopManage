@@ -34,6 +34,26 @@ export const deleteLotGoodsAPI = (ids) => {
   })
 }
 
+export const restoreLotGoodsAPI = (ids) => {
+  return request({
+    url: '/admin/goods/restore',
+    method: 'post',
+    data: {
+      ids
+    }
+  })
+}
+
+export const destroyLotGoodsAPI = (ids) => {
+  return request({
+    url: '/admin/goods/destroy',
+    method: 'post',
+    data: {
+      ids
+    }
+  })
+}
+
 export const editGoodsAPI = (id, data) => {
   return request({
     url: '/admin/goods/' + id,

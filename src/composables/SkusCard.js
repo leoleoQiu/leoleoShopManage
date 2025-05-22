@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import {
   addSkusGoodsAPI,
   exitSkusGoodsAPI,
@@ -12,6 +12,7 @@ import {
 export const goodsId = ref(0)
 export const SkusLoading = ref(false)
 export const skusCardList = ref([])
+export const skusGoodsList = ref([])
 //初始化表格选项
 export const initSkusCard = (value) => {
   skusCardList.value = value.goodsSkusCard.map((item) => {
@@ -23,6 +24,7 @@ export const initSkusCard = (value) => {
     })
     return item
   })
+  skusGoodsList.value = value.goodsSkus
 }
 
 export const addSkusCard = async () => {
@@ -38,6 +40,7 @@ export const addSkusCard = async () => {
     loading: false,
     goodsSkusCardValue: []
   })
+  changeTableValue()
 }
 
 export const exitSkusGoods = async (item) => {
@@ -50,6 +53,7 @@ export const exitSkusGoods = async (item) => {
       type: item.type
     })
     item.name = item.text
+    changeTableValue()
   } catch {
     item.text = item.name
   } finally {
@@ -89,6 +93,7 @@ export const sortSkusGoods = async (action, index) => {
   try {
     SkusLoading.value = true
     await sortSkusGoodsAPI(sortData)
+    changeTableValue()
   } finally {
     SkusLoading.value = false
   }
@@ -104,11 +109,12 @@ export const addItemValue = async (value, item) => {
       value: value
     })
     item.goodsSkusCardValue.push({ ...res.data, text: res.data.value })
+    changeTableValue()
   } finally {
     SkusLoading.value = false
   }
 }
-
+//更新属性值
 export const updateItemValue = async (value, tag) => {
   try {
     await updateSkusGoodsItemAPI(tag.id, {
@@ -118,6 +124,7 @@ export const updateItemValue = async (value, tag) => {
       value: value
     })
     tag.value = tag.text
+    changeTableValue()
   } catch {
     tag.text = tag.value
   }
@@ -129,7 +136,7 @@ export const deleteItemValue = async (tag, item) => {
     (o) => tag.id !== o.id
   )
 }
-
+//更新规格以及属性
 export const submitChoose = async (id, data) => {
   const item = skusCardList.value.find((o) => id === o.id)
   try {
@@ -144,7 +151,67 @@ export const submitChoose = async (id, data) => {
       o.text = o.value
       return o
     })
+    changeTableValue()
   } finally {
     SkusLoading.value = false
   }
+}
+
+//初始化表格
+export const initTableData = () => {
+  const skusLables = computed(() =>
+    skusCardList.value.filter((o) => o.goodsSkusCardValue.length > 0)
+  )
+  //表头
+  const tableLables = computed(() => {
+    let length = skusLables.value.length
+    return [
+      { name: '商品规格', colspan: length, rowspan: length > 0 ? 1 : 2 },
+      { name: '销售价', width: '100', rowspan: 2 },
+      { name: '市场价', width: '100', rowspan: 2 },
+      { name: '成本价', width: '100', rowspan: 2 },
+      { name: '库存', width: '100', rowspan: 2 },
+      { name: '体积', width: '100', rowspan: 2 },
+      { name: '重量', width: '100', rowspan: 2 },
+      { name: '编码', width: '100', rowspan: 2 }
+    ]
+  })
+  return {
+    skusLables,
+    tableLables
+  }
+}
+
+// 笛卡尔积，保留原对象
+function cartesianProduct(arr) {
+  return arr.reduce(
+    (a, b) => {
+      return a.flatMap((d) => b.map((e) => d.concat([e])))
+    },
+    [[]]
+  )
+}
+
+const changeTableValue = () => {
+  const arr = cartesianProduct(
+    skusCardList.value
+      .filter(
+        (item) => item.goodsSkusCardValue && item.goodsSkusCardValue.length > 0
+      )
+      .map((item) => item.goodsSkusCardValue)
+  )
+  skusGoodsList.value = arr.map((o) => {
+    return {
+      code: '',
+      cprice: '0.00',
+      image: '',
+      oprice: '0.00',
+      pprice: '0.00',
+      goods_id: goodsId.value,
+      skus: o,
+      stock: 0,
+      volume: 0,
+      weight: 0
+    }
+  })
 }

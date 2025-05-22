@@ -4,7 +4,9 @@ import {
   addGoodsAPI,
   deleteLotGoodsAPI,
   editGoodsAPI,
-  changeGoodsStatusAPI
+  changeGoodsStatusAPI,
+  restoreLotGoodsAPI,
+  destroyLotGoodsAPI
 } from '@/api/goods.js'
 import { getCategoryAPI } from '@/api/category.js'
 import { ref } from 'vue'
@@ -172,18 +174,30 @@ const multipleSelection = ref([])
 const handleSelectionChange = (arr) => {
   multipleSelection.value = arr.map((o) => o.id)
 }
-//批量删除
-const multipleTableRef = ref()
-const handleSelectionSubmit = async () => {
+//封装函数复用
+const LotFunction = async (func, msg) => {
   try {
     loading.value = true
-    await deleteLotGoodsAPI(multipleSelection.value)
+    await func(multipleSelection.value)
     multipleTableRef.value.clearSelection()
-    getGoodsList()
-    ElMessage.success('成功删除')
+    getGoodsList(currentPage.value, searchForm.value)
+    ElMessage.success(msg)
   } finally {
     loading.value = false
   }
+}
+//批量删除
+const multipleTableRef = ref()
+const handleSelectionSubmit = async () => {
+  LotFunction(deleteLotGoodsAPI, '成功删除')
+}
+//批量恢复
+const handleSelectionRestore = async () => {
+  LotFunction(restoreLotGoodsAPI, '成功恢复')
+}
+//彻底删除
+const handleSelectionDestroy = async () => {
+  LotFunction(destroyLotGoodsAPI, '彻底删除成功')
 }
 //批量修改状态
 const changeGoodsStatus = async (status) => {
@@ -191,7 +205,7 @@ const changeGoodsStatus = async (status) => {
     loading.value = true
     await changeGoodsStatusAPI(multipleSelection.value, status)
     multipleTableRef.value.clearSelection()
-    getGoodsList()
+    getGoodsList(currentPage.value, searchForm.value)
     ElMessage.success('成功修改')
   } finally {
     loading.value = false
@@ -222,8 +236,8 @@ const handleSkus = (scope) => {
       :name="item.name"
     ></el-tab-pane>
   </el-tabs>
-  <el-container class="goods">
-    <el-card shadow="hover" class="goods-card" v-loading="loading">
+  <el-container class="goods" v-loading="loading">
+    <el-card shadow="hover" class="goods-card">
       <search-header
         :model="searchForm"
         @OnSearch="OnSearch"
@@ -260,12 +274,29 @@ const handleSkus = (scope) => {
       </search-header>
       <div class="top">
         <PageHeader
-          layout="create,refresh,deleteMap"
+          layout="create,refresh"
           buttonTitle="新增管理员"
           @create="addGoods"
           @refresh="getGoodsList(currentPage)"
-          @deleteMap="handleSelectionSubmit"
         >
+          <el-button
+            v-if="searchForm.tab !== 'delete'"
+            type="danger"
+            @click="handleSelectionSubmit"
+            >批量删除</el-button
+          >
+          <el-button
+            v-if="searchForm.tab === 'delete'"
+            type="danger"
+            @click="handleSelectionDestroy"
+            >彻底删除</el-button
+          >
+          <el-button
+            v-if="searchForm.tab === 'delete'"
+            type="warning"
+            @click="handleSelectionRestore"
+            >批量恢复</el-button
+          >
           <el-button
             v-if="searchForm.tab === 'all' || searchForm.tab === 'off'"
             type="primary"

@@ -2,7 +2,13 @@
 import { ref } from 'vue'
 import { readBannerAPI, updateSkusGoodsAPI } from '@/api/goods.js'
 import SkusCard from './SkusCard.vue'
-import { goodsId, initSkusCard, SkusLoading } from '@/composables/SkusCard.js'
+import SkusTable from './SkusTable.vue'
+import {
+  goodsId,
+  initSkusCard,
+  SkusLoading,
+  skusGoodsList
+} from '@/composables/SkusCard.js'
 const drawer = ref(null)
 const formData = ref({
   sku_type: 0,
@@ -34,7 +40,14 @@ const close = () => {
 const confirmSubmit = async () => {
   drawer.value.handleLoading()
   try {
-    await updateSkusGoodsAPI(goodsId.value, formData.value)
+    if (formData.value.sku_type === 0) {
+      await updateSkusGoodsAPI(goodsId.value, formData.value)
+    } else {
+      await updateSkusGoodsAPI(goodsId.value, {
+        sku_type: formData.value.sku_type,
+        goodsSkus: skusGoodsList.value
+      })
+    }
     drawer.value.close()
     ElMessage.success('成功修改商品规则')
   } finally {
@@ -90,6 +103,7 @@ defineExpose({
         </template>
         <template v-else>
           <SkusCard></SkusCard>
+          <SkusTable></SkusTable>
         </template>
       </el-form>
     </template>
