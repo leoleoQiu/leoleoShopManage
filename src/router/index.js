@@ -101,6 +101,12 @@ const asyncRoutes = [
     name: 'category/list',
     component: () => import('@/views/Category/index.vue'),
     meta: { title: '商品分类' }
+  },
+  {
+    path: '/level/list',
+    name: 'level/list',
+    component: () => import('@/views/Level/index.vue'),
+    meta: { title: '会员等级' }
   }
 ]
 
