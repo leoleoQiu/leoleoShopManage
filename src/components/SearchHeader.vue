@@ -7,7 +7,7 @@ defineProps({
 const slots = useSlots()
 </script>
 <template>
-  <el-form :model="searchForm">
+  <el-form :model="searchForm" label-position="right" label-width="auto">
     <el-row>
       <slot></slot>
       <template v-if="isShowCate"><slot name="show"></slot></template>
