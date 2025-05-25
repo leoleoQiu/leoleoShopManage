@@ -1,9 +1,7 @@
 <script setup>
-import { getOrderAPI, deleteLotOrderAPI } from '@/api/order.js'
-import { getCategoryAPI } from '@/api/category.js'
+import { getOrderAPI, deleteLotOrderAPI, refundOrderAPI } from '@/api/order.js'
 import { ref } from 'vue'
-import ImageChoose from '@/views/Manager/components/ImageChoose.vue'
-import ContentModule from '@/views/Goods/components/ContentModule.vue'
+import DataExport from './components/DataExport.vue'
 const OrderList = ref([])
 const rolesList = ref([])
 const totalCount = ref(0)
@@ -81,18 +79,13 @@ const tabList = [
     name: 'refunding'
   }
 ]
-//编辑
+//订单详情
 const RowId = ref(null)
-const handleEdit = async (row) => {
-  drawerTitle.value = '编辑'
-  RowId.value = row.row.id
-  for (let key in formData.value) {
-    if (key === 'role_id') {
-      formData.value[key] = row.row.role.id
-    } else {
-      formData.value[key] = row.row[key]
-    }
-  }
+const info = ref({})
+const handleOpen = async (row) => {
+  drawerTitle.value = '订单详情'
+  info.value = row
+  console.log(info.value)
   drawerRef.value.open()
 }
 //提交表单
@@ -139,13 +132,6 @@ const resetSearchWord = () => {
 const OnSearch = () => {
   getOrderList(currentPage.value, searchForm.value)
 }
-//商品分类
-const categoryList = ref([])
-const getCategory = async () => {
-  const res = await getCategoryAPI()
-  categoryList.value = res.data
-}
-getCategory()
 //批量功能
 const multipleSelection = ref([])
 const handleSelectionChange = (arr) => {
@@ -167,6 +153,38 @@ const LotFunction = async (func, msg) => {
 const multipleTableRef = ref()
 const handleSelectionSubmit = async () => {
   LotFunction(deleteLotOrderAPI, '成功删除')
+}
+
+//execl导出
+const exportDrawer = ref(null)
+const downLoad = () => {
+  exportDrawer.value.open()
+}
+
+//拒绝或者同意退款
+const handleRefund = async (row, agree) => {
+  const obj = {
+    agree
+  }
+  if (agree === 1) {
+    await ElMessageBox.confirm('是否同意退款', '请确认', {
+      confirmButtonText: '同意',
+      cancelButtonText: '不同意',
+      type: 'warning'
+    })
+  } else {
+    const res = await ElMessageBox.prompt('请输入拒绝退款原因', '拒绝退款', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消'
+    })
+    obj.disagree_reason = res.value
+  }
+  await refundOrderAPI(row.id, obj)
+  getOrderList(1, searchForm.value)
+  ElMessage({
+    type: 'success',
+    message: '成功操作'
+  })
 }
 </script>
 <template>
@@ -243,7 +261,11 @@ const handleSelectionSubmit = async () => {
         </template>
       </search-header>
       <div class="top">
-        <PageHeader layout="">
+        <PageHeader
+          layout="refresh,download"
+          @refresh="getOrderList"
+          @download="downLoad"
+        >
           <el-button type="danger" @click="handleSelectionSubmit"
             >批量删除</el-button
           >
@@ -332,7 +354,7 @@ const handleSelectionSubmit = async () => {
         <el-table-column label="操作" align="center">
           <template #default="scope">
             <div>
-              <el-button text type="primary" @click="handleEdit(scope)">
+              <el-button text type="primary" @click="handleOpen(scope.row)">
                 订单详情
               </el-button>
               <el-button text type="primary" v-if="searchForm.tab === 'noship'"
@@ -342,12 +364,14 @@ const handleSelectionSubmit = async () => {
                 text
                 type="primary"
                 v-if="searchForm.tab === 'refunding'"
+                @click="handleRefund(scope.row, 1)"
                 >同意退款</el-button
               >
               <el-button
                 text
                 type="danger"
                 v-if="searchForm.tab === 'refunding'"
+                @click="handleRefund(scope.row, 0)"
                 >拒绝退款</el-button
               >
             </div>
@@ -366,77 +390,60 @@ const handleSelectionSubmit = async () => {
     </el-card>
     <!-- 抽屉组件 -->
     <FormDrawer ref="drawerRef" @submit="submitForm" :title="drawerTitle">
-      <el-form
-        ref="formRef"
-        :model="formData"
-        label-position="right"
-        label-width="auto"
-      >
-        <el-form-item label="用户名">
-          <el-input v-model="formData.title"></el-input>
-        </el-form-item>
-        <el-form-item label="封面">
-          <ImageChoose v-model="formData.cover"></ImageChoose>
-        </el-form-item>
-        <el-form-item label="商品分类">
-          <el-select
-            v-model="formData.category_id"
-            placeholder="请选择商品分类"
-          >
-            <el-option
-              v-for="item in categoryList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商品描述">
-          <el-input
-            type="textarea"
-            :rows="2"
-            placeholder="选填商品分类"
-            v-model="formData.desc"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="单位">
-          <el-input v-model="formData.unit"></el-input>
-        </el-form-item>
-        <el-form-item label="总库存">
-          <el-input v-model="formData.stock">
-            <template #append>件</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="库存预警">
-          <el-input v-model="formData.min_stock">
-            <template #append>件</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="最低销售价">
-          <el-input v-model="formData.min_price">
-            <template #append>元</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="最低原价">
-          <el-input v-model="formData.min_oprice">
-            <template #append>元</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="库存显示">
-          <el-radio-group v-model="formData.stock_display">
-            <el-radio :value="0" size="large">隐藏</el-radio>
-            <el-radio :value="1" size="large">显示</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="是否上架">
-          <el-radio-group v-model="formData.status">
-            <el-radio :value="0" size="large">放入仓库</el-radio>
-            <el-radio :value="1" size="large">立即上架</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
+      <el-card style="margin-bottom: 20px">
+        <template #header>
+          <strong>订单详情</strong>
+        </template>
+        <el-form label-width="auto" label-position="right">
+          <el-form-item label="订单号"> {{ info.no }} </el-form-item>
+          <el-form-item label="付款方式">
+            {{ info.payment_method }}
+          </el-form-item>
+          <el-form-item label="付款时间"> {{ info.paid_time }} </el-form-item>
+          <el-form-item label="创建时间">
+            {{ info.payment_method }}
+          </el-form-item>
+        </el-form>
+      </el-card>
+
+      <el-card style="margin-bottom: 20px">
+        <template #header>
+          <strong>商品详情</strong>
+        </template>
+        <div style="display: flex; align-items: center">
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="info.order_items[0].goods_item.cover"
+            fit="cover"
+          />
+          <div style="margin-left: 20px">
+            <p>{{ info.order_items[0].goods_item.title }}</p>
+            <div>
+              <span style="color: red"
+                >￥{{ info.order_items[0].price }}&nbsp;</span
+              >
+              <i>*1</i>
+            </div>
+          </div>
+        </div>
+      </el-card>
+
+      <el-card>
+        <template #header>
+          <strong>订单详情</strong>
+        </template>
+        <el-form label-width="auto" label-position="right">
+          <el-form-item label="收货人"> {{ info.address.name }} </el-form-item>
+          <el-form-item label="联系方式">
+            {{ info.address.phone }}
+          </el-form-item>
+          <el-form-item label="收货地址">
+            {{ info.address.address }}
+          </el-form-item>
+        </el-form>
+      </el-card>
     </FormDrawer>
-    <ContentModule ref="contentDrawer"></ContentModule>
+    <DataExport ref="exportDrawer" :tabs="tabList"></DataExport>
   </el-container>
 </template>
 <style lang="scss" scoped>

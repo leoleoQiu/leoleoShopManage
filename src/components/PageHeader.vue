@@ -8,7 +8,7 @@ const props = defineProps({
   }
 })
 const pageShow = computed(() => props.layout.split(','))
-defineEmits(['deleteMap', 'create', 'refresh'])
+defineEmits(['deleteMap', 'create', 'refresh', 'download'])
 </script>
 <template>
   <div>
@@ -38,12 +38,22 @@ defineEmits(['deleteMap', 'create', 'refresh'])
     </el-popconfirm>
     <slot></slot>
   </div>
-  <div
-    class="icon"
-    v-if="pageShow.includes('refresh')"
-    @click="$emit('refresh')"
-    style="cursor: pointer"
-  >
-    <el-icon><Refresh /></el-icon>
+  <div style="display: flex">
+    <div
+      class="icon"
+      v-if="pageShow.includes('refresh')"
+      @click="$emit('refresh')"
+      style="cursor: pointer; margin-right: 5px"
+    >
+      <el-icon><Refresh /></el-icon>
+    </div>
+    <div
+      class="icon"
+      v-if="pageShow.includes('download')"
+      @click="$emit('download')"
+      style="cursor: pointer"
+    >
+      <el-icon><Download /></el-icon>
+    </div>
   </div>
 </template>

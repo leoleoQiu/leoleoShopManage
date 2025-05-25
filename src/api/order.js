@@ -36,7 +36,8 @@ export const exportOrderAPI = (data) => {
   return request({
     url: '/admin/order/excelexport',
     method: 'post',
-    data
+    data,
+    responseType: 'blob'
   })
 }
 
