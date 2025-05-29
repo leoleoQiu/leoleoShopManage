@@ -322,7 +322,7 @@ const handleSkus = (scope) => {
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" />
-        <el-table-column label="商品" width="300">
+        <el-table-column label="商品" width="250">
           <template #default="{ row }">
             <div style="display: flex">
               <div class="left" style="margin-right: 10px">
@@ -361,7 +361,7 @@ const handleSkus = (scope) => {
         <el-table-column
           label="审核状态"
           align="center"
-          width="300"
+          width="250"
           v-if="searchForm.tab !== 'delete'"
         >
           <template #default="{ row }">
