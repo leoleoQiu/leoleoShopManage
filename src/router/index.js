@@ -171,6 +171,9 @@ router.beforeEach(async (to) => {
   if (to.path !== '/login' && !userStore.token) {
     return '/login'
   }
+  if (to.path === '/login') {
+    GetMenu = false
+  }
   let hasNewRoute = false
   if (userStore.token && !GetMenu) {
     await userStore.getUserMenu()
