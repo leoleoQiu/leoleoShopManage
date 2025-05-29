@@ -20,12 +20,13 @@ const UploadError = (response) => {
     type: 'error'
   })
 }
+const urlAPI = import.meta.env.VITE_APP_BASE_API + '/admin/image/upload'
 </script>
 <template>
   <el-upload
     class="upload-demo"
     drag
-    action="/api/admin/image/upload"
+    :action="urlAPI"
     multiple
     method="post"
     name="img"

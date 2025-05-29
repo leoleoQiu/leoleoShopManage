@@ -65,6 +65,8 @@ const handSave = async () => {
   })
   getData()
 }
+
+const urlAPI = import.meta.env.VITE_APP_BASE_API + '/admin/sysconfig/upload'
 </script>
 <template>
   <div>
@@ -185,7 +187,7 @@ const handSave = async () => {
           </el-form-item>
           <el-form-item label="cert_client">
             <el-upload
-              action="/api/admin/sysconfig/upload"
+              :action="urlAPI"
               style="width: 100%"
               :limit="1"
               :headers="{
