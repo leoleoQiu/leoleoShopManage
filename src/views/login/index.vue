@@ -51,7 +51,7 @@ onBeforeMount(() => {
     <el-col :md="24" :lg="16" class="left">
       <div>
         <div class="title">LEOLEO后台</div>
-        <div class="content">leoleoQiu的小demo 学学学学</div>
+        <!-- <div class="content">leoleoQiu的小demo 学学学学</div> -->
       </div>
     </el-col>
     <el-col :md="24" :lg="8" class="right">

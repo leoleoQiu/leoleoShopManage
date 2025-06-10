@@ -71,7 +71,7 @@ const handleCommand = (command) => {
       <div class="menu">
         <el-dropdown @command="handleCommand">
           <span class="el-dropdown-link dropdown">
-            <el-avatar :size="40" :src="userStore.userMenu.avatar" />
+            <el-avatar :size="40" src="/avatar.jpg" />
             <div>LEOLEO</div>
             <el-icon class="el-icon--right">
               <arrow-down />
